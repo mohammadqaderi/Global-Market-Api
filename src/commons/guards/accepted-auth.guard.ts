@@ -10,7 +10,7 @@ export class AcceptedAuthGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const roles = this.reflector.get<Role[]>('roles', context.getHandler);
+    const roles = this.reflector.get<Role[]>('roles', context.getHandler());
     if (!roles) {
       return true;
     }

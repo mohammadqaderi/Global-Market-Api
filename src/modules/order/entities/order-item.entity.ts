@@ -13,8 +13,6 @@ export class OrderItem extends BaseEntity {
   @Column()
   quantity: number;
 
-  @Column()
-  totalPrice: number;
 
   @ManyToOne(type => Order, order => order.orderItems, {
     eager: false,

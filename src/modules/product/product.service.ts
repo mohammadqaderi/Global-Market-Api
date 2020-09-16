@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ProductRepository } from './repositories/product.repository';
 import { InsertTagDto } from '../../shared/dto/insert-tag.dto';
 import { ProductTag } from './entities/product-tag.entity';
@@ -10,6 +10,10 @@ import { AwsService } from '../../shared/modules/aws/aws.service';
 import { TagService } from '../tag/tag.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { CartService } from '../cart/cart.service';
+import { CartProduct } from '../cart/entities/cart-product.entity';
+import { CreateCartProductDto } from '../cart/dto/create-cart-product.dto';
+import { Cart } from '../cart/entities/cart.entity';
 
 
 @Injectable()
@@ -18,6 +22,7 @@ export class ProductService {
   constructor(private readonly productRepository: ProductRepository,
               @InjectRepository(ProductTag) private readonly productTagRepository: Repository<ProductTag>,
               private awsService: AwsService,
+              @Inject(forwardRef(() => CartService)) private cartService: CartService,
               private tagService: TagService) {
   }
 
@@ -35,6 +40,18 @@ export class ProductService {
       NotFound('Product', id);
     }
     return product;
+  }
+
+  async searchForProductsByTagName(tagName: string) {
+    return await this.productRepository.getProductsByTagName(tagName);
+  }
+
+  async getFilteredBetweenRange(range1: number, range2: number) {
+    return await this.productRepository.filterByRangePrice(6, range1, range2);
+  }
+
+  async getFilteredByStockExistence(stock: boolean) {
+    return await this.productRepository.filterByExistenceInStock(6, stock);
   }
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
@@ -62,7 +79,25 @@ export class ProductService {
     return updatedProduct;
   }
 
-  async addProductToCart(productId: number, cartId: number) {
+  async addProductToCart(productId: number, cartId: number, createCartProductDto: CreateCartProductDto) {
+    const cart = await this.cartService.getUserCart(null, cartId);
+    const product = await this.getProductById(productId);
+    const { quantity } = createCartProductDto;
+    const cartProduct = new CartProduct();
+    cartProduct.productId = product.id;
+    cartProduct.image = product.images[0];
+    cartProduct.quantity = quantity;
+    cartProduct.totalPrice = product.price * quantity;
+    cartProduct.name = product.name;
+    cart.totalItems += 1;
+    product.quantity = product.quantity - quantity;
+    await product.save();
+    cartProduct.cart = await cart.save();
+    const savedCartProduct = await cartProduct.save();
+    return savedCartProduct;
+  }
+
+  async updateCartAndProduct(cart: Cart, product: Product, quantity: number) {
 
   }
 
@@ -94,10 +129,7 @@ export class ProductService {
   async deleteProduct(id: number) {
     const product = await this.getProductById(id);
     for (let i = 0; i < product.productTags.length; i++) {
-      // delete product tags
-    }
-    for (let i = 0; i < product.cartProducts.length; i++) {
-      // delete products in the cart
+      await this.productTagRepository.delete(product.productTags[i].id);
     }
     for (let i = 0; i < product.images.length; i++) {
       await this.awsService.fileDelete(product.images[i]);

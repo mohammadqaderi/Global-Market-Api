@@ -10,18 +10,26 @@ import { SubCategoryDto } from '../dto/category.dto';
 import { ThrowErrors } from '../../../commons/functions/throw-errors';
 import NotFound = ThrowErrors.NotFound;
 import { TagService } from '../../tag/tag.service';
+import { ProductService } from '../../product/product.service';
+import { SubCategoryRepository } from '../repositories/sub-category.repository';
 
 
 @Injectable()
 export class SubCategoryService {
-  constructor(@InjectRepository(SubCategory) private readonly subCategoryRepository: Repository<SubCategory>,
-              @InjectRepository(CategoryTag) private readonly categoryTagRepository: Repository<CategoryTag>,
-              private awsService: AwsService,
-              private tagService: TagService) {
+  constructor(
+    private readonly subCategoryRepository: SubCategoryRepository,
+    @InjectRepository(CategoryTag) private readonly categoryTagRepository: Repository<CategoryTag>,
+    private productService: ProductService,
+    private awsService: AwsService,
+    private tagService: TagService) {
   }
 
   async getAllSubCategories() {
     return await this.subCategoryRepository.find();
+  }
+
+  async getSubCategoriesByTagName(tagName: string) {
+    return await this.subCategoryRepository.getSubCategoriesByTagName(tagName);
   }
 
   async getSubCategory(id: number) {
@@ -36,7 +44,7 @@ export class SubCategoryService {
     return subCategory;
   }
 
-  async newProduct(subCategoryId: number, username: string, productPayload: {
+  async newProduct(subCategoryId: number, folderName: string, subFolder: string, type: string, productPayload: {
     name: string,
     description: string,
     images: any,
@@ -60,7 +68,7 @@ export class SubCategoryService {
     product.subCategory = subCategory;
     for (let i = 0; i < images.length; i++) {
       const img = await this.awsService.fileUpload(images[i],
-        { username: username, folderName: 'products-images' });
+        { folderName: folderName, type: type, subFolder: subFolder });
       product.images = [...product.images, img];
     }
     const newProduct = await product.save();
@@ -89,10 +97,10 @@ export class SubCategoryService {
   async deleteSubCategory(id: number) {
     const subCategory = await this.getSubCategory(id);
     for (let i = 0; i < subCategory.products.length; i++) {
-      // delete products
+      await this.productService.deleteProduct(subCategory.products[i].id);
     }
     for (let i = 0; i < subCategory.categoryTags.length; i++) {
-      // delete category tags
+      await this.categoryTagRepository.delete(subCategory.categoryTags[i].id);
     }
     const result = await this.subCategoryRepository.delete(id);
     if (result.affected === 0) {

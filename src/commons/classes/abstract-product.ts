@@ -10,10 +10,7 @@ export class AbstractProduct extends BaseEntity {
   @Column()
   quantity: number;
 
-  @Column('float',{
-    default: 0.0
-  })
-  price: number;
+
 
 
 }

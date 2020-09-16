@@ -15,7 +15,7 @@ import {
 import { InsertTagDto } from '../../../shared/dto/insert-tag.dto';
 import { SubCategoryService } from '../services/sub-category.service';
 import { SubCategoryDto } from '../dto/category.dto';
-import { AnyFilesInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 
 @Controller('sub-categories')
@@ -28,16 +28,23 @@ export class SubCategoryController {
     return this.subCategoryService.getAllSubCategories();
   }
 
+  @Get('by-tag-name/:tagName')
+  getSubCategoriesByTagName(@Param('tagName') tagName: string) {
+    return this.subCategoryService.getSubCategoriesByTagName(tagName);
+  }
+
   @Get(':id')
   getSubCategory(@Param('id', ParseIntPipe) id: number) {
     return this.subCategoryService.getSubCategory(id);
   }
 
-  @Post(':id/new-product/:username')
+  @Post(':id/new-product/:folderName/:subFolder/:type')
   @UseInterceptors(FilesInterceptor('images'))
   newProduct(
     @Param('id', ParseIntPipe) id: number,
-    @Param('username') username: string,
+    @Param('type') type: string,
+    @Param('folderName') folderName: string,
+    @Param('subFolder') subFolder: string,
     @Body('name') name: string,
     @Body('description') description: string,
     @Body('references') references: number[],
@@ -46,7 +53,7 @@ export class SubCategoryController {
     @Body('quantity', ParseIntPipe) quantity: number,
     @UploadedFiles() images: any,
   ) {
-    return this.subCategoryService.newProduct(id, username, {
+    return this.subCategoryService.newProduct(id, folderName, subFolder, type, {
       name,
       description,
       images,

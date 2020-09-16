@@ -11,14 +11,16 @@ import { SubCategoryController } from './controllers/sub-category.controller';
 import { SubCategoryService } from './services/sub-category.service';
 import { SubCategory } from './entities/sub-category.entity';
 import { TagModule } from '../tag/tag.module';
+import { ProductModule } from '../product/product.module';
+import { SubCategoryRepository } from './repositories/sub-category.repository';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Category, SubCategory, CategoryTag]),
+    TypeOrmModule.forFeature([Category, SubCategoryRepository, CategoryTag]),
     PassportModule.register({
       defaultStrategy: AuthConstants.strategies,
-    }), AwsModule, TagModule],
+    }), AwsModule, TagModule, ProductModule],
   controllers: [CategoryController, SubCategoryController],
   providers: [CategoryService, SubCategoryService],
 })

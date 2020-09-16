@@ -3,6 +3,7 @@ import { OrderStatus } from '../../../commons/enums/order-status.enum';
 import { User } from '../../auth/entities/user.entity';
 import { Invoice } from '../../invoice/invoice.entity';
 import { OrderItem } from './order-item.entity';
+import { BillingAddress } from '../../../commons/classes/billing-address';
 
 
 @Entity('orders')
@@ -26,6 +27,9 @@ export class Order extends BaseEntity {
 
   @Column()
   comments: string;
+
+  @Column('simple-json')
+  address: BillingAddress;
 
   @Column()
   shipmentDate: Date;

@@ -6,12 +6,14 @@ import { Repository } from 'typeorm';
 import { SubCategory } from '../entities/sub-category.entity';
 import { ThrowErrors } from '../../../commons/functions/throw-errors';
 import NotFound = ThrowErrors.NotFound;
+import { SubCategoryService } from './sub-category.service';
 
 
 @Injectable()
 export class CategoryService {
 
-  constructor(@InjectRepository(Category) private readonly categoryRepository: Repository<Category>) {
+  constructor(@InjectRepository(Category) private readonly categoryRepository: Repository<Category>,
+              private subCategoryService: SubCategoryService) {
   }
 
   async getAllCategories(): Promise<Category[]> {
@@ -78,7 +80,7 @@ export class CategoryService {
   async deleteCategory(id: number) {
     const category = await this.getCategoryById(id);
     for (let i = 0; i < category.subCategories.length; i++) {
-      // delete sub categories
+      await this.subCategoryService.deleteSubCategory(category.subCategories[i].id);
     }
     const result = await this.categoryRepository.delete(id);
     if (result.affected === 0) {

@@ -9,19 +9,13 @@ export class Profile extends BaseEntity {
   id: number;
 
   @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
+  displayName: string;
 
   @Column({
     type: 'enum',
     enum: Gender,
   })
   gender: Gender;
-
-  @Column()
-  age: number;
 
   @Column()
   country: string;
@@ -40,9 +34,7 @@ export class Profile extends BaseEntity {
   })
   image: string;
 
-  @OneToOne(type => User, user => user.profile, {
-    eager: true,
-  })
+  @OneToOne(type => User, user => user.profile)
   user: User;
 
 

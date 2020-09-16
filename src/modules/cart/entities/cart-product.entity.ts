@@ -1,9 +1,6 @@
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { AbstractProduct } from '../../../commons/classes/abstract-product';
 import { Cart } from './cart.entity';
-import { Product } from '../../product/entities/product.entity';
-
-
 @Entity('cart-product')
 export class CartProduct extends AbstractProduct {
 
@@ -15,10 +12,10 @@ export class CartProduct extends AbstractProduct {
   })
   cart: Cart;
 
-  @ManyToOne(type => Product, product => product.cartProducts, {
-    eager: false,
+  @Column('float',{
+    default: 0.0
   })
-  product: Product;
+  totalPrice: number;
 
   @Column()
   cartId: number;

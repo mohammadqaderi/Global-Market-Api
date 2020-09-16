@@ -15,12 +15,12 @@
       false
     ],
     "no-namespace": false,
-
     "no-mergeable-namespace": false,
     "ordered-imports": [
       false
     ],
     "whitespace": false,
+    "explicit-module-boundary-types": false,
     "no-inferrable-types": false,
     "prefer-const": false,
     "variable-name": false,

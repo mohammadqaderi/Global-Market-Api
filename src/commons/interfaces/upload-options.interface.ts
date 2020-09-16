@@ -1,4 +1,5 @@
 export interface UploadOptions {
   folderName: string;
-  username: string;
+  subFolder: string;
+  type: string;
 }

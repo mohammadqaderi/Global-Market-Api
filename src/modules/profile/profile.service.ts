@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './profile.entity';
 import { Repository } from 'typeorm';
 import { User } from '../auth/entities/user.entity';
-import { CreateProfileDto } from '../auth/dto/create-profile.dto';
+import { CreateProfileDto } from './dto/create-profile.dto';
 import { AwsService } from '../../shared/modules/aws/aws.service';
 
 
@@ -34,21 +34,21 @@ export class ProfileService {
 
   async editProfile(user: User, createProfileDto: CreateProfileDto): Promise<Profile> {
     const profile = await this.getProfileData(user);
-    const { firstName, lastName, phone, age, address, city, country, gender }
+    const { country, gender, city, contacts, displayName }
       = createProfileDto;
-    if (firstName) {
-      profile.firstName = firstName;
-    }
-    if (lastName) {
-      profile.lastName = lastName;
-    }
-    if (age) {
-      profile.age = age;
+
+    if (displayName) {
+      profile.displayName = displayName;
     }
 
     if (city) {
       profile.city = city;
     }
+
+    if (contacts) {
+      profile.contacts = contacts;
+    }
+
     if (country) {
       profile.country = country;
     }

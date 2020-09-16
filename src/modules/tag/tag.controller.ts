@@ -18,7 +18,7 @@ export class TagController {
     return this.tagService.createNewTag(createTagDto);
   }
 
-  @Delete(':id/delete-tag')
+  @Delete(':id/delete')
   deleteTag(@Param('id', ParseIntPipe) id: number) {
     return this.tagService.deleteTag(id);
   }
@@ -28,7 +28,7 @@ export class TagController {
     return this.tagService.getTagById(id);
   }
 
-  @Put(':id/update-tag')
+  @Put(':id/update')
   updateTag(@Param('id', ParseIntPipe) id: number, @Body() updateTagDto: TagDto) {
     return this.tagService.updateTag(id, updateTagDto);
   }

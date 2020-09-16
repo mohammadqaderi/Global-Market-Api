@@ -1,7 +1,7 @@
 import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {  ApiProperty } from '@nestjs/swagger';
 
 export class AbstractCategory extends BaseEntity {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -18,7 +18,6 @@ export class AbstractCategory extends BaseEntity {
     default: new Date(),
   })
   createdAt: Date;
-
   @Column({
     nullable: true,
   })

@@ -11,7 +11,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateProfileDto } from '../auth/dto/create-profile.dto';
+import { CreateProfileDto } from './dto/create-profile.dto';
 import { GetAuthenticatedUser } from '../../commons/decorators/get-authenticated-user.decorator';
 import { User } from '../auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -22,11 +22,17 @@ import { ProfileService } from './profile.service';
 
 
 @UseGuards(AuthGuard(), AcceptedAuthGuard)
-@Roles([Role.ADMIN, Role.USER])
+@Roles(Role.ADMIN, Role.USER)
 @Controller('profiles')
 export class ProfileController {
 
   constructor(private profileService: ProfileService) {
+  }
+
+  @Post('create-profile')
+  createProfile(@GetAuthenticatedUser() user: User,
+                @Body() createProfileDto: CreateProfileDto) {
+    return this.profileService.getProfileData(user);
   }
 
   @Get('user-profile')

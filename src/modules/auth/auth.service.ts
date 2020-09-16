@@ -28,9 +28,7 @@ import * as Verifier from 'email-verifier';
 
 @Injectable()
 export class AuthService {
-  private verifier = new Verifier('at_whgCW1bbw4DtPGPBgMVEfCW8n9rMs', {
-    retries: 2,
-  });
+  private verifier = new Verifier('at_whgCW1bbw4DtPGPBgMVEfCW8n9rMs');
 
   constructor(@InjectRepository(UserRepository) private userRepository: UserRepository,
               @InjectRepository(EmailVerification) private emailVerificationRepo: Repository<EmailVerification>,
@@ -76,19 +74,15 @@ export class AuthService {
     return { user: await user.save(), token };
   }
 
-  async isEmailActivated(email: string) {
-    let validEmailToUse = null;
-    this.verifier.verify(email, (err, data) => {
-      if (err) {
-        throw err;
-      }
-      if (data.smtpCheck == 'true') {
-        validEmailToUse = true;
-      } else {
-        validEmailToUse = false;
-      }
-    });
-    return validEmailToUse;
+  isEmailActivated(email: string) {
+    return new Promise(((resolve, reject) => {
+      this.verifier.verify(email, (err, data) => {
+        if (err) {
+          throw err;
+        }
+        resolve((data.smtpCheck == 'true'));
+      });
+    }));
   }
 
 

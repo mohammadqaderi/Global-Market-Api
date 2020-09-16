@@ -71,4 +71,4 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 - Twitter - [@nestframework](https://twitter.com/nestframework)
 ## License
 
-  This Project if fully licensed to mohammad qaderi and his team
+  This Project is fully licensed to mohammad qaderi and his team

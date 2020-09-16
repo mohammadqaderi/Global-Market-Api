@@ -19,8 +19,21 @@ s3.config.update({
 
 @Injectable()
 export class AwsService {
+
+  async uploadImage() {
+
+  }
+
+  async uploadProfileImage(file: any, options: UploadOptions) {
+
+  }
+
+  async uploadProductImage() {
+
+  }
+
   async fileUpload(file: any, options: UploadOptions): Promise<string> {
-    const { folderName, username } = options;
+    const { folderName, subFolder, type } = options;
     return new Promise((resolve, reject) => {
       const name = file.originalname.split('.')[0];
       const fileExtName = extname(file.originalname);
@@ -30,7 +43,7 @@ export class AwsService {
         .join('');
       const params: AWS.S3.Types.PutObjectRequest = {
         Bucket: AwsConfig.AWS_S3_BUCKET_NAME,
-        Key: `${username}/${folderName}/${name}-${randomName}${fileExtName}`,
+        Key: type ? `${folderName}/${subFolder}/${type}/${name}-${randomName}${fileExtName}` : `${folderName}/${subFolder}/${name}-${randomName}${fileExtName}`,
         Body: file.buffer,
         ACL: 'public-read',
       };

@@ -1,0 +1,203 @@
+{
+  "http://localhost:3000/cart/checkout-on-single-product/10": {
+    "order": {
+      "comments": "This is the first order to me",
+      "user": {
+        "id": 12,
+        "username": "Mohammad Qaderi",
+        "password": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O85GHRnjsBv.Gn39W/JDxElJgGaVk5BS",
+        "email": "mqaderi44@gmail.com",
+        "salt": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O",
+        "roles": [
+          "USER"
+        ],
+        "emailVerified": false,
+        "profileId": null,
+        "cartId": 2,
+        "invoices": [],
+        "payments": [],
+        "orders": []
+      },
+      "orderItems": [],
+      "status": "PROCESSED",
+      "address": {
+        "country": "Jordan",
+        "city": "Amman",
+        "currentAddress": "sport city circle"
+      },
+      "shipmentDate": "2020-09-21T21:00:00.000Z",
+      "userId": 12,
+      "updatedAt": null,
+      "invoiceId": null,
+      "id": 7,
+      "createdAt": "2020-09-15T17:29:09.880Z"
+    },
+    "payment": {
+      "paymentMethod": "VISA",
+      "user": {
+        "id": 12,
+        "username": "Mohammad Qaderi",
+        "password": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O85GHRnjsBv.Gn39W/JDxElJgGaVk5BS",
+        "email": "mqaderi44@gmail.com",
+        "salt": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O",
+        "roles": [
+          "USER"
+        ],
+        "emailVerified": false,
+        "profileId": null,
+        "cartId": 2,
+        "invoices": [],
+        "payments": [],
+        "orders": []
+      },
+      "amount": 600,
+      "invoice": {
+        "user": {
+          "id": 12,
+          "username": "Mohammad Qaderi",
+          "password": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O85GHRnjsBv.Gn39W/JDxElJgGaVk5BS",
+          "email": "mqaderi44@gmail.com",
+          "salt": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O",
+          "roles": [
+            "USER"
+          ],
+          "emailVerified": false,
+          "profileId": null,
+          "cartId": 2,
+          "invoices": [],
+          "payments": [],
+          "orders": []
+        },
+        "dueDate": "2020-09-21T21:00:00.000Z",
+        "paymentDate": "2020-09-15T20:31:06.470Z",
+        "order": {
+          "comments": "This is the first order to me",
+          "user": {
+            "id": 12,
+            "username": "Mohammad Qaderi",
+            "password": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O85GHRnjsBv.Gn39W/JDxElJgGaVk5BS",
+            "email": "mqaderi44@gmail.com",
+            "salt": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O",
+            "roles": [
+              "USER"
+            ],
+            "emailVerified": false,
+            "profileId": null,
+            "cartId": 2,
+            "invoices": [],
+            "payments": [],
+            "orders": []
+          },
+          "orderItems": [],
+          "status": "PROCESSED",
+          "address": {
+            "country": "Jordan",
+            "city": "Amman",
+            "currentAddress": "sport city circle"
+          },
+          "shipmentDate": "2020-09-21T21:00:00.000Z",
+          "userId": 12,
+          "updatedAt": null,
+          "invoiceId": null,
+          "id": 7,
+          "createdAt": "2020-09-15T17:29:09.880Z"
+        },
+        "total": 600,
+        "number": "b7b5ea40-0a3f-43d8-9d93-b1da2cfb30ee",
+        "userId": 12,
+        "id": 4,
+        "date": "2020-09-15T17:29:09.882Z"
+      },
+      "userId": 12,
+      "invoiceId": 4,
+      "id": 3,
+      "date": "2020-09-15T17:29:09.882Z"
+    },
+    "invoice": {
+      "user": {
+        "id": 12,
+        "username": "Mohammad Qaderi",
+        "password": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O85GHRnjsBv.Gn39W/JDxElJgGaVk5BS",
+        "email": "mqaderi44@gmail.com",
+        "salt": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O",
+        "roles": [
+          "USER"
+        ],
+        "emailVerified": false,
+        "profileId": null,
+        "cartId": 2,
+        "invoices": [],
+        "payments": [],
+        "orders": []
+      },
+      "dueDate": "2020-09-21T21:00:00.000Z",
+      "paymentDate": "2020-09-15T20:31:06.470Z",
+      "order": {
+        "comments": "This is the first order to me",
+        "user": {
+          "id": 12,
+          "username": "Mohammad Qaderi",
+          "password": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O85GHRnjsBv.Gn39W/JDxElJgGaVk5BS",
+          "email": "mqaderi44@gmail.com",
+          "salt": "$2a$10$vCj7cq7Y88M4P2m9Z3id0O",
+          "roles": [
+            "USER"
+          ],
+          "emailVerified": false,
+          "profileId": null,
+          "cartId": 2,
+          "invoices": [],
+          "payments": [],
+          "orders": []
+        },
+        "orderItems": [],
+        "status": "PROCESSED",
+        "address": {
+          "country": "Jordan",
+          "city": "Amman",
+          "currentAddress": "sport city circle"
+        },
+        "shipmentDate": "2020-09-21T21:00:00.000Z",
+        "userId": 12,
+        "updatedAt": null,
+        "invoiceId": null,
+        "id": 7,
+        "createdAt": "2020-09-15T17:29:09.880Z"
+      },
+      "total": 600,
+      "number": "b7b5ea40-0a3f-43d8-9d93-b1da2cfb30ee",
+      "userId": 12,
+      "id": 4,
+      "date": "2020-09-15T17:29:09.882Z"
+    }
+  },
+  "http://localhost:3000/cart/remove-products-from-cart": {
+    "id": 2,
+    "totalItems": 0,
+    "cartProducts": [
+      {
+        "id": 5,
+        "name": "Notch-Lapel Denim Blazer",
+        "quantity": 2,
+        "image": "https://global-market-store.s3.us-east-2.amazonaws.com/Jeans/Clothes/Jeans/jeans2-10676.jpg",
+        "totalPrice": 280,
+        "cartId": 2,
+        "productId": 3
+      }
+    ]
+  },
+  "http://localhost:3000/products/2/add-to-cart/2": {
+    "productId": 2,
+    "image": "https://global-market-store.s3.us-east-2.amazonaws.com/products-images/Clothes/dress-1 look-a-84c9.jpg",
+    "quantity": 2,
+    "totalPrice": 600,
+    "name": "Open Back Dress",
+    "cart": {
+      "id": 2,
+      "totalItems": 1,
+      "cartProducts": []
+    },
+    "cartId": 2,
+    "id": 10
+  }
+}

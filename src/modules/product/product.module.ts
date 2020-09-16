@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { AuthConstants } from '../../commons/constants/auth-constants';
 import { AwsModule } from '../../shared/modules/aws/aws.module';
@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductTag } from './entities/product-tag.entity';
 import { ProductRepository } from './repositories/product.repository';
 import { TagModule } from '../tag/tag.module';
+import { CartModule } from '../cart/cart.module';
 
 
 @Module({
@@ -15,9 +16,10 @@ import { TagModule } from '../tag/tag.module';
     TypeOrmModule.forFeature([ProductRepository, ProductTag]),
     PassportModule.register({
       defaultStrategy: AuthConstants.strategies,
-    }), AwsModule, TagModule],
+    }), AwsModule, TagModule, forwardRef(() => CartModule)],
   controllers: [ProductController],
   providers: [ProductService],
+  exports: [ProductService],
 })
 export class ProductModule {
 
