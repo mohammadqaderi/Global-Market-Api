@@ -12,7 +12,8 @@ async function bootstrap() {
   app.enableCors();
   SwaggerOptionsInit(app);
 
-  await app.listen(3000);
-}
+  const port: number = parseInt(`${process.env.PORT}`) || 4000;
+
+  await app.listen(port);}
 
 bootstrap();
