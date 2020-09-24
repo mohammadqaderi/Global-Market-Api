@@ -9,141 +9,116 @@ import { PaymentModule } from './modules/payment/payment.module';
 import { OrderModule } from './modules/order/order.module';
 import { InvoiceModule } from './modules/invoice/invoice.module';
 
+interface DocumentData {
+  title: string;
+  description: string;
+  tags: string;
+}
+
 export function SwaggerOptionsInit(app: any) {
-  const options1 = new DocumentBuilder()
-    .setTitle('Auth Module')
-    .setDescription('Auth Module description')
-    .setVersion('1.0')
-    .addTag(`entities,users, auth, strategies, jwt`, `
-     These keywords and tags are within the domain of Auth Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const authDocument = SwaggerModule.createDocument(app, options1, {
-    include: [AuthModule],
+  const options1 = buildDocument({
+    title: 'Auth Module',
+    description: 'Auth Module description',
+    tags: 'entities,users, auth, strategies, jwt',
   });
-  SwaggerModule.setup('api/auth', app, authDocument);
+
+  generateDoc(app, options1, AuthModule, 'api/auth');
 
   // End of Options1
 
-  const options2 = new DocumentBuilder()
-    .setTitle('Profile Module')
-    .setDescription('Profile Module description')
-    .setVersion('1.0')
-    .addTag(`profiles`, `
-     These keywords and tags are within the domain of Profile Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const profileDocument = SwaggerModule.createDocument(app, options2, {
-    include: [ProfileModule],
+
+  const options2 = buildDocument({
+    title: 'Profile Module',
+    description: 'These keywords and tags are within the domain of Profile Module',
+    tags: 'profiles',
   });
-  SwaggerModule.setup('api/profiles', app, profileDocument);
+
+  generateDoc(app, options2, ProfileModule, 'api/profiles');
 
   // End of Options2
 
-  const options3 = new DocumentBuilder()
-    .setTitle('Cart Module')
-    .setDescription('Cart Module description')
-    .setVersion('1.0')
-    .addTag(`carts, cart-product`, `
-     These keywords and tags are within the domain of Cart Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const cartDocument = SwaggerModule.createDocument(app, options3, {
-    include: [CartModule],
+
+  const options3 = buildDocument({
+    title: 'Cart Module',
+    description: 'Cart Module description',
+    tags: 'cart',
   });
-  SwaggerModule.setup('api/cart', app, cartDocument);
+  generateDoc(app, options3, CartModule, 'api/cart');
 
   // End of Options3
 
-  const options4 = new DocumentBuilder()
-    .setTitle('Category Module')
-    .setDescription('Auth Module description')
-    .setVersion('1.0')
-    .addTag(`category, sub-category, category-tag`, `
-     These keywords and tags are within the domain of Category Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const categoryDocument = SwaggerModule.createDocument(app, options4, {
-    include: [CategoryModule],
+  const options4 = buildDocument({
+    title: 'Category Module',
+    description: 'Category Module description',
+    tags: 'category, sub-category, category-tag',
   });
-  SwaggerModule.setup('api/categories', app, categoryDocument);
+  generateDoc(app, options4, CategoryModule, 'api/categories');
 
   // End of Options4
 
-  const options5 = new DocumentBuilder()
-    .setTitle('Product Module')
-    .setDescription('Product Module description')
-    .setVersion('1.0')
-    .addTag(`product, product-tags`, `
-     These keywords and tags are within the domain of Product Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const productDocument = SwaggerModule.createDocument(app, options5, {
-    include: [ProductModule],
+  const options5 = buildDocument({
+    title: 'Product Module',
+    description: 'Product Module description',
+    tags: 'product, product-tags',
   });
-  SwaggerModule.setup('api/products', app, productDocument);
+  generateDoc(app, options5, ProductModule, 'api/products');
 
   // End of Options5
 
-  const options6 = new DocumentBuilder()
-    .setTitle('Tag Module')
-    .setDescription('Tag Module description')
-    .setVersion('1.0')
-    .addTag(`tags`, `
-     These keywords and tags are within the domain of Tag Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const tagsDocument = SwaggerModule.createDocument(app, options6, {
-    include: [TagModule],
+
+  const options6 = buildDocument({
+    title: 'Tag Module',
+    description: 'Tag Module description',
+    tags: 'tags',
   });
-  SwaggerModule.setup('api/tags', app, tagsDocument);
+  generateDoc(app, options6, TagModule, 'api/tags');
 
   // End of Options6
 
-  const options7 = new DocumentBuilder()
-    .setTitle('Payment Module')
-    .setDescription('Payment Module description')
-    .setVersion('1.0')
-    .addTag(`payments`, `
-     These keywords and tags are within the domain of Payment Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const paymentsDocument = SwaggerModule.createDocument(app, options7, {
-    include: [PaymentModule],
+
+  const options7 = buildDocument({
+    title: 'Payment Module',
+    description: 'Payment Module description',
+    tags: 'payments',
   });
-  SwaggerModule.setup('api/payments', app, paymentsDocument);
+  generateDoc(app, options7, PaymentModule, 'api/payments');
 
   // End of Options7
 
-  const options8 = new DocumentBuilder()
-    .setTitle('Order Module')
-    .setDescription('Order Module description')
-    .setVersion('1.0')
-    .addTag(`orders, order-item`, `
-     These keywords and tags are within the domain of Order Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const ordersDocument = SwaggerModule.createDocument(app, options8, {
-    include: [OrderModule],
+  const options8 = buildDocument({
+    title: 'Order Module',
+    description: 'Order Module description',
+    tags: 'orders, order-item',
   });
-  SwaggerModule.setup('api/orders', app, ordersDocument);
-
+  generateDoc(app, options8, OrderModule, 'api/orders');
   // End of Options8
 
-  const options9 = new DocumentBuilder()
-    .setTitle('Invoice Module')
-    .setDescription('Invoice Module description')
-    .setVersion('1.0')
-    .addTag(`invoices`, `
-     These keywords and tags are within the domain of Invoice Module`)
-    .setLicense('Mohammad Qaderi', null)
-    .build();
-  const invoicesDocument = SwaggerModule.createDocument(app, options9, {
-    include: [InvoiceModule],
-  });
-  SwaggerModule.setup('api/invoices', app, invoicesDocument);
 
+  const options9 = buildDocument({
+    title: 'Invoice Module',
+    description: 'Invoice Module description',
+    tags: 'invoices',
+  });
+  generateDoc(app, options9, InvoiceModule, 'api/invoices');
   // End of Options9
 
+}
 
+function buildDocument(data: DocumentData) {
+  const { title, description, tags } = data;
+  return new DocumentBuilder()
+    .setTitle(title)
+    .setDescription(description)
+    .setVersion('1.0')
+    .addTag(tags, `
+     These keywords and tags are within the domain of Auth Module`)
+    .setLicense('Mohammad Qaderi', null)
+    .build();
+}
+
+function generateDoc(app, options, moduleName, path) {
+  const document = SwaggerModule.createDocument(app, options, {
+    include: [moduleName],
+  });
+  SwaggerModule.setup(path, app, document);
 }

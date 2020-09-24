@@ -32,6 +32,19 @@ export class ProfileService {
     }
   }
 
+  async createUserProfile(user: User, createProfileDto: CreateProfileDto) {
+    const profile = new Profile();
+    const { displayName, contacts, city, country, gender } = createProfileDto;
+    profile.user = user;
+    profile.displayName = displayName;
+    profile.contacts = contacts;
+    profile.city = city;
+    profile.gender = gender;
+    profile.country = country;
+    const userProfile = await profile.save();
+    return userProfile;
+  }
+
   async editProfile(user: User, createProfileDto: CreateProfileDto): Promise<Profile> {
     const profile = await this.getProfileData(user);
     const { country, gender, city, contacts, displayName }
@@ -59,20 +72,20 @@ export class ProfileService {
     return savedProfile;
   }
 
-  async setProfileImage(user: User, image: any): Promise<Profile> {
+  async setProfileImage(user: User, folderName: string, subFolder: string, image: any): Promise<Profile> {
     const profile = await this.getProfileData(user);
     if (image) {
-      // profile.image = await this.awsService.fileUpload(image, 'profile-images');
+      profile.image = await this.awsService.fileUpload(image, { folderName: folderName, subFolder: subFolder, type: null });
     }
     const savedProfile = await profile.save();
     return savedProfile;
   }
 
-  async changeProfileImage(user: User, image: any): Promise<Profile> {
+  async changeProfileImage(user: User, folderName: string, subFolder: string, image: any): Promise<Profile> {
     const profile = await this.getProfileData(user);
     if (image) {
       await this.awsService.fileDelete(profile.image);
-      // profile.image = await this.awsService.fileUpload(image, 'profile-images');
+      profile.image = await this.awsService.fileUpload(image, { folderName: folderName, subFolder: subFolder, type: null });
     }
     const savedProfile = await profile.save();
     return savedProfile;
@@ -81,7 +94,7 @@ export class ProfileService {
   async deleteProfileImage(user: User): Promise<Profile> {
     const profile = await this.getProfileData(user);
     if (!profile.image) {
-      throw new ConflictException('the profile is already set to null!');
+      throw new ConflictException('the profile has no image to delete!');
     }
     await this.awsService.fileDelete(profile.image);
     profile.image = null;

@@ -18,14 +18,6 @@ export class CategoryDto {
   })
   description: string;
 
-  @ApiProperty({
-    type: String,
-    name: 'icon',
-    description: 'This is the Icon class of the Category',
-    required: true,
-    title: 'Icon',
-  })
-  icon: string;
 }
 
 export class SubCategoryDto {
@@ -45,14 +37,7 @@ export class SubCategoryDto {
     title: 'Description',
   })
   description: string;
-  @ApiProperty({
-    type: String,
-    name: 'icon',
-    description: 'This is the Icon class of the Sub Category',
-    required: true,
-    title: 'Icon',
-  })
-  icon: string;
+
   @ApiProperty({
     type: [Number],
     isArray: true,

@@ -1,13 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './tag.entity';
 import { Repository } from 'typeorm';
 import { TagDto } from './dto/tag.dto';
+import { ProductService } from '../product/product.service';
+import { SubCategoryService } from '../category/services/sub-category.service';
 
 
 @Injectable()
 export class TagService {
-  constructor(@InjectRepository(Tag) private readonly tagRepo: Repository<Tag>) {
+  constructor(@InjectRepository(Tag) private readonly tagRepo: Repository<Tag>,
+              @Inject(forwardRef(() => ProductService)) private productService: ProductService,
+              @Inject(forwardRef(() => SubCategoryService)) private subCategoryService: SubCategoryService) {
   }
 
   async getAllTags(): Promise<Tag[]> {
@@ -18,8 +22,6 @@ export class TagService {
     const { name } = createTagDto;
     const tag = new Tag();
     tag.name = name;
-    tag.categoryTags = [];
-    tag.productTags = [];
     const newTag = await tag.save();
     return newTag;
   }
@@ -46,12 +48,21 @@ export class TagService {
 
   async deleteTag(id: number): Promise<void> {
     const tag = await this.getTagById(id);
-    for (let i = 0; i < tag.productTags.length; i++) {
-      // delete product tags
+    const products = await this.productService.searchForProductsByTagName(tag.name);
+    const subCategories = await this.subCategoryService.getSubCategoriesByTagName(tag.name);
+    for (let i = 0; i < products.length; i++) {
+      for (let j = 0; j < products[i].productTags.length; j++) {
+        if (products[i].productTags[j].tagId === tag.id) {
+          await this.productService.productTagRepository.delete(products[i].productTags[j].id);
+        }
+      }
     }
-
-    for (let i = 0; i < tag.categoryTags.length; i++) {
-      // delete category tags
+    for (let i = 0; i < subCategories.length; i++) {
+      for (let j = 0; j < subCategories[i].subCategoryTags.length; j++) {
+        if (subCategories[i].subCategoryTags[j].tagId === tag.id) {
+          await this.subCategoryService.subCategoryTagRepository.delete(subCategories[i].subCategoryTags[j].id);
+        }
+      }
     }
     const result = await this.tagRepo.delete(id);
     if (result.affected === 0) {

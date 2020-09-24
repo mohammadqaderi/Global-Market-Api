@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany, Unique } from 'typeorm';
 import { Product } from '../../product/entities/product.entity';
-import { CategoryTag } from './category-tag.entity';
+import { SubCategoryTag } from './sub-category-tag.entity';
 import { AbstractCategory } from '../../../commons/classes/abstract-category';
 import { Category } from './category.entity';
 
@@ -13,10 +13,10 @@ export class SubCategory extends AbstractCategory {
   products: Product[];
 
 
-  @OneToMany(type => CategoryTag, categoryTag => categoryTag.subCategory, {
+  @OneToMany(type => SubCategoryTag, subCategoryTag => subCategoryTag.subCategory, {
     eager: true,
   })
-  categoryTags: CategoryTag[];
+  subCategoryTags: SubCategoryTag[];
 
   @ManyToOne(type => Category, category => category.subCategories, {
     eager: false,
@@ -24,8 +24,10 @@ export class SubCategory extends AbstractCategory {
   category: Category;
 
   @Column('int', {
-    array: true
+    array: true,
   })
   references: Array<number>;
 
+  @Column()
+  categoryId: number;
 }

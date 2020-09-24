@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
-import { Role } from '../../../commons/enums/role.enum';
 import { EmailLoginDto } from '../dto/email-login.dto';
 import * as bcrypt from 'bcryptjs';
+import { UserRole } from '../../../commons/enums/user-role.enum';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -13,6 +13,12 @@ export class UserRepository extends Repository<User> {
 
   async findByUsername(username: string): Promise<User> {
     return await this.findOne({ username });
+  }
+
+  async getSystemUsers() {
+    const query = this.createQueryBuilder('user');
+    const users = await query.select(['user.id', 'user.email', 'user.username', 'user.claims', 'user.emailVerified']).getMany();
+    return users;
   }
 
   async validateUserPassword(emailLoginDto: EmailLoginDto): Promise<{ email: string, user: User }> {
@@ -30,16 +36,16 @@ export class UserRepository extends Repository<User> {
 
   async validateAdminPassword(emailLoginDto: EmailLoginDto) {
     const { email, password } = emailLoginDto;
-    const user = await this.findByEmail(email);
-    if (!user) {
+    const admin = await this.findByEmail(email);
+    if (!admin) {
       throw new NotFoundException('User does not exist in the database');
     }
-    const isAdmin = (): boolean => user.roles.some(role => role === Role.ADMIN);
+    const isAdmin = (): boolean => admin.claims.some(role => role === UserRole.SUPER_ADMIN || UserRole.WEAK_ADMIN);
     if (!isAdmin()) {
       throw new ForbiddenException('This Resource Is Forbidden');
     }
-    if (user && (await user.validatePassword(password))) {
-      return { email, user };
+    if (admin && (await admin.validatePassword(password))) {
+      return { email, admin };
     } else {
       throw new BadRequestException('Your Password in incorrect, please enter another one');
     }

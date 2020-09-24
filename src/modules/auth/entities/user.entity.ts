@@ -1,11 +1,11 @@
 import { BaseEntity, Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { Role } from '../../../commons/enums/role.enum';
 import * as bcrypt from 'bcryptjs';
 import { Profile } from '../../profile/profile.entity';
 import { Cart } from '../../cart/entities/cart.entity';
 import { Invoice } from '../../invoice/invoice.entity';
 import { Payment } from '../../payment/payment.entity';
 import { Order } from '../../order/entities/order.entity';
+import { UserRole } from '../../../commons/enums/user-role.enum';
 
 @Entity('users')
 @Unique(['username', 'email'])
@@ -31,10 +31,11 @@ export class User extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: Role,
+    enum: UserRole,
     array: true,
+    nullable: true,
   })
-  roles: Role[];
+  claims: UserRole[];
 
 
   // new column

@@ -9,9 +9,6 @@ export class AbstractCategory extends BaseEntity {
   name: string;
 
   @Column()
-  icon: string;
-
-  @Column()
   description: string;
 
   @Column({

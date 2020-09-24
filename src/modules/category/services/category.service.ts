@@ -34,28 +34,26 @@ export class CategoryService {
 
   async updateCategory(id: number, updateCategoryDto: CategoryDto): Promise<Category> {
     const category = await this.getCategoryById(id);
-    const { name, description, icon } = updateCategoryDto;
+    const { name, description } = updateCategoryDto;
     if (name) {
       category.name = name;
     }
-    if (icon) {
-      category.icon = icon;
-    }
+
     if (description) {
       category.description = description;
     }
+    category.updatedAt = new Date();
     const updatedCategory = await category.save();
     return updatedCategory;
   }
 
 
   async newCategory(createCategoryDto: CategoryDto): Promise<Category> {
-    const { name, description, icon } = createCategoryDto;
+    const { name, description } = createCategoryDto;
     const category = new Category();
     category.name = name;
     category.description = description;
     category.subCategories = [];
-    category.icon = icon;
     const newCategory = await category.save();
     return newCategory;
   }
@@ -63,13 +61,12 @@ export class CategoryService {
 
   async addSubCategory(id: number, subCategoryDto: SubCategoryDto): Promise<SubCategory> {
     const category = await this.getCategoryById(id);
-    const { name, description, references, icon } = subCategoryDto;
+    const { name, description, references } = subCategoryDto;
     const subCategory = new SubCategory();
     subCategory.category = category;
-    subCategory.categoryTags = [];
-    subCategory.references = references;
+    subCategory.subCategoryTags = [];
+    subCategory.references = references ? references : [];
     subCategory.name = name;
-    subCategory.icon = icon;
     subCategory.description = description;
     subCategory.products = [];
     const newSubCategory = await subCategory.save();
@@ -77,7 +74,7 @@ export class CategoryService {
   }
 
 
-  async deleteCategory(id: number) {
+  async deleteCategory(id: number): Promise<void> {
     const category = await this.getCategoryById(id);
     for (let i = 0; i < category.subCategories.length; i++) {
       await this.subCategoryService.deleteSubCategory(category.subCategories[i].id);

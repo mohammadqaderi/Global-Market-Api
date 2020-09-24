@@ -23,11 +23,13 @@ export class Product extends AbstractProduct {
   })
   references: Array<number>;
 
-  @Column()
+  @Column({
+    default: true,
+  })
   inStock: boolean;
 
-  @Column('float',{
-    default: 0.0
+  @Column('float', {
+    default: 0.0,
   })
   price: number;
 
@@ -36,7 +38,6 @@ export class Product extends AbstractProduct {
     nullable: true,
   })
   productTags: ProductTag[];
-
 
 
   @ManyToOne(type => SubCategory, subCategory => subCategory.products, {

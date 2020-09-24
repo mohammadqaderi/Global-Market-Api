@@ -15,7 +15,6 @@ import { EmailLoginDto } from './dto/email-login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ForgottenPassword } from './entities/forgotten-password.entity';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { Role } from '../../commons/enums/role.enum';
 import { JwtPayload } from '../../commons/interfaces/jwt-payload.interface';
 import { ProfileService } from '../profile/profile.service';
 import { Config } from '../../config';
@@ -25,6 +24,8 @@ import { EmailSenderService } from '../../shared/modules/email/email-sender.serv
 import { ThrowErrors } from '../../commons/functions/throw-errors';
 import NotFound = ThrowErrors.NotFound;
 import * as Verifier from 'email-verifier';
+import { EditRolesDto } from './dto/edit-roles.dto';
+import { UserRole } from '../../commons/enums/user-role.enum';
 
 @Injectable()
 export class AuthService {
@@ -40,14 +41,22 @@ export class AuthService {
 
   }
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<{ user: User, token: string }> {
+  async signUpAdmin(authCredentialsDto: AuthCredentialsDto): Promise<{ admin: User, token: string }> {
+    const admin = await this.setUserOrAdminBaseData(authCredentialsDto);
+    admin.claims = [UserRole.WEAK_ADMIN];
+    const { email } = authCredentialsDto;
+    const token = this.generateJwtToken(email);
+    return { admin: await admin.save(), token };
+  }
+
+  async setUserOrAdminBaseData(authCredentialsDto: AuthCredentialsDto): Promise<User> {
     const { username, password, email } = authCredentialsDto;
     if (!this.isValidEmail(email)) {
       throw new BadRequestException('You have entered invalid email');
     }
-    if (!(await this.isEmailActivated(email))) {
-      throw new ConflictException(`Your Email is not valid to use in our environment or other environments, please check if this email is valid to use in its service provider`);
-    }
+    // if (!(await this.isEmailActivated(email))) {
+    //   throw new ConflictException(`Your Email is not valid to use in our environment or other environments, please check if this email is valid to use in its service provider`);
+    // }
     const user = new User();
     user.salt = await bcrypt.genSalt();
 
@@ -62,14 +71,19 @@ export class AuthService {
     } else {
       user.email = email;
     }
-
-    user.roles = [Role.USER];
     user.password = await this.userRepository.hashPassword(password, user.salt);
     user.payments = [];
     user.orders = [];
     user.invoices = [];
-    await this.createEmailToken(email);
-    await this.sendEmailVerification(email);
+    return user;
+  }
+
+  async signUpUser(authCredentialsDto: AuthCredentialsDto): Promise<{ user: User, token: string }> {
+    const user = await this.setUserOrAdminBaseData(authCredentialsDto);
+    const { email } = authCredentialsDto;
+    user.claims = [UserRole.USER];
+    // await this.createEmailToken(email);
+    // await this.sendEmailVerification(email);
     const token = this.generateJwtToken(email);
     return { user: await user.save(), token };
   }
@@ -83,6 +97,7 @@ export class AuthService {
         resolve((data.smtpCheck == 'true'));
       });
     }));
+
   }
 
 
@@ -249,18 +264,18 @@ export class AuthService {
     return true;
   }
 
-  async signInAdmin(emailLoginDto: EmailLoginDto): Promise<{ accessToken: string, user: User }> {
+  async signInAdmin(emailLoginDto: EmailLoginDto): Promise<{ token: string, admin: User }> {
     if (!(await this.isValidEmail(emailLoginDto.email))) {
       throw new BadRequestException('Invalid Email Signature');
     }
-    const { email, user } = await this.userRepository.validateAdminPassword(emailLoginDto);
+    const { email, admin } = await this.userRepository.validateAdminPassword(emailLoginDto);
     const payload: JwtPayload = { email };
-    const accessToken = this.jwtService.sign(payload);
-    return { accessToken, user };
+    const token = this.jwtService.sign(payload);
+    return { token, admin };
   }
 
   async getSystemUsers(): Promise<User[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.getSystemUsers();
   }
 
   async getUserById(id: number) {
@@ -275,12 +290,12 @@ export class AuthService {
     return user;
   }
 
-  async editUserRoles(id: number, roles: Role[]): Promise<User> {
+  async editUserRoles(id: number, editRolesDto: EditRolesDto): Promise<{ processCompleted: boolean }> {
+    const { roles } = editRolesDto;
     const user = await this.getUserById(id);
-    if (roles) {
-      user.roles = roles;
-    }
-    return await user.save();
+    user.claims = roles;
+    await user.save();
+    return { processCompleted: true };
   }
 
   async deleteUserAccount(user: User) {

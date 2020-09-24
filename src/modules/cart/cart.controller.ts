@@ -4,14 +4,14 @@ import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
 import { GetAuthenticatedUser } from '../../commons/decorators/get-authenticated-user.decorator';
 import { User } from '../auth/entities/user.entity';
 import { CartService } from './cart.service';
-import { Role } from '../../commons/enums/role.enum';
 import { Roles } from '../../commons/decorators/roles.decorator';
 import { OrderDto } from '../order/dto/order.dto';
 import { CreatePaymentDto } from '../payment/dto/create-payment.dto';
 import { RemoveCartItem } from '../../commons/interfaces/remove-cart-item';
+import { UserRole } from '../../commons/enums/user-role.enum';
 
 @UseGuards(AuthGuard(), UserAuthGuard)
-@Roles(Role.USER)
+@Roles(UserRole.USER)
 @Controller('cart')
 export class CartController {
   constructor(private cartService: CartService) {

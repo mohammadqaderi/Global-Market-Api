@@ -1,11 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SubCategory } from '../entities/sub-category.entity';
 import { Repository } from 'typeorm';
 import { AwsService } from '../../../shared/modules/aws/aws.service';
 import { Product } from '../../product/entities/product.entity';
 import { InsertTagDto } from '../../../shared/dto/insert-tag.dto';
-import { CategoryTag } from '../entities/category-tag.entity';
+import { SubCategoryTag } from '../entities/sub-category-tag.entity';
 import { SubCategoryDto } from '../dto/category.dto';
 import { ThrowErrors } from '../../../commons/functions/throw-errors';
 import NotFound = ThrowErrors.NotFound;
@@ -18,10 +18,10 @@ import { SubCategoryRepository } from '../repositories/sub-category.repository';
 export class SubCategoryService {
   constructor(
     private readonly subCategoryRepository: SubCategoryRepository,
-    @InjectRepository(CategoryTag) private readonly categoryTagRepository: Repository<CategoryTag>,
-    private productService: ProductService,
+    @InjectRepository(SubCategoryTag) public readonly subCategoryTagRepository: Repository<SubCategoryTag>,
+    @Inject(forwardRef(() => ProductService)) private productService: ProductService,
     private awsService: AwsService,
-    private tagService: TagService) {
+    @Inject(forwardRef(() => TagService)) private tagService: TagService) {
   }
 
   async getAllSubCategories() {
@@ -48,23 +48,25 @@ export class SubCategoryService {
     name: string,
     description: string,
     images: any,
-    inStock: boolean,
     quantity: number,
     price: number,
-    references: number[]
+    references: any
   }) {
     const subCategory = await this.getSubCategory(subCategoryId);
-    const { name, description, references, images, inStock, price, quantity } = productPayload;
+    const { name, description, references, images, price, quantity } = productPayload;
     const product = new Product();
     product.name = name;
     product.description = description;
-    product.inStock = inStock;
-    if (!references) {
-      product.references = [];
+    product.references = [];
+    if(references){
+      for (let i = 0; i < references.length; i++) {
+        product.references.push(+references[i]);
+      }
     }
     product.price = price;
     product.images = [];
     product.quantity = quantity;
+    product.productTags = [];
     product.subCategory = subCategory;
     for (let i = 0; i < images.length; i++) {
       const img = await this.awsService.fileUpload(images[i],
@@ -77,12 +79,9 @@ export class SubCategoryService {
 
   async updateSubCategory(id: number, updateSubCategoryDto: SubCategoryDto): Promise<SubCategory> {
     const subCategory = await this.getSubCategory(id);
-    const { name, description, references, icon } = updateSubCategoryDto;
+    const { name, description, references } = updateSubCategoryDto;
     if (name) {
       subCategory.name = name;
-    }
-    if (icon) {
-      subCategory.icon = icon;
     }
     if (description) {
       subCategory.description = description;
@@ -90,6 +89,7 @@ export class SubCategoryService {
     if (references) {
       subCategory.references = references;
     }
+    subCategory.updatedAt = new Date();
     const updatedSubCategory = await subCategory.save();
     return updatedSubCategory;
   }
@@ -99,8 +99,8 @@ export class SubCategoryService {
     for (let i = 0; i < subCategory.products.length; i++) {
       await this.productService.deleteProduct(subCategory.products[i].id);
     }
-    for (let i = 0; i < subCategory.categoryTags.length; i++) {
-      await this.categoryTagRepository.delete(subCategory.categoryTags[i].id);
+    for (let i = 0; i < subCategory.subCategoryTags.length; i++) {
+      await this.subCategoryTagRepository.delete(subCategory.subCategoryTags[i].id);
     }
     const result = await this.subCategoryRepository.delete(id);
     if (result.affected === 0) {
@@ -108,29 +108,30 @@ export class SubCategoryService {
     }
   }
 
-  async addTagsToCategory(id: number, payload: InsertTagDto): Promise<CategoryTag[]> {
+  async addTagsToCategory(id: number, payload: InsertTagDto): Promise<SubCategoryTag[]> {
     const subCategory = await this.getSubCategory(id);
-    let addedTags: CategoryTag[] = [];
+    let addedTags: SubCategoryTag[] = [];
     for (let i = 0; i < payload.tags.length; i++) {
-      const categoryTag = new CategoryTag();
-      categoryTag.subCategory = subCategory;
+      const subCategoryTag = new SubCategoryTag();
+      subCategoryTag.subCategory = subCategory;
       const tag = await this.tagService.getTagById(payload.tags[i]);
-      categoryTag.tag = tag;
-      categoryTag.name = tag.name;
-      const newCategoryTag = await categoryTag.save();
-      addedTags = [...addedTags, newCategoryTag];
+      subCategoryTag.tagId = tag.id;
+      subCategoryTag.name = tag.name;
+      const newSubCategoryTag = await subCategoryTag.save();
+      addedTags = [...addedTags, newSubCategoryTag];
     }
     return addedTags;
   }
 
-  async removeTagsFromCategory(id: number, categoryTags: number[]): Promise<void> {
+  async removeTagsFromCategory(id: number, payload: any): Promise<SubCategory> {
     const subCategory = await this.getSubCategory(id);
-    for (let i = 0; i < categoryTags.length; i++) {
-      const categoryTag = subCategory.categoryTags.find(ct => ct.id === categoryTags[i]);
+    for (let i = 0; i < payload.subCategoryTags.length; i++) {
+      const categoryTag = subCategory.subCategoryTags.find(ct => ct.id === payload.subCategoryTags[i]);
       if (categoryTag) {
-        console.log(`category tag with id: ${categoryTag.id} exist`);
-        await this.categoryTagRepository.delete(categoryTag.id);
+        await this.subCategoryRepository.delete(categoryTag.id);
+        subCategory.subCategoryTags = subCategory.subCategoryTags.filter(sTag => sTag.id !== payload.subCategoryTags[i]);
       }
     }
+    return await subCategory.save();
   }
 }

@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException, Param } from '@nestjs/common';
 import { ProductRepository } from './repositories/product.repository';
 import { InsertTagDto } from '../../shared/dto/insert-tag.dto';
 import { ProductTag } from './entities/product-tag.entity';
@@ -13,17 +13,17 @@ import { Repository } from 'typeorm';
 import { CartService } from '../cart/cart.service';
 import { CartProduct } from '../cart/entities/cart-product.entity';
 import { CreateCartProductDto } from '../cart/dto/create-cart-product.dto';
-import { Cart } from '../cart/entities/cart.entity';
+import { ManageProductImages } from '../../commons/interfaces/manage-product-images.interface';
 
 
 @Injectable()
 export class ProductService {
 
   constructor(private readonly productRepository: ProductRepository,
-              @InjectRepository(ProductTag) private readonly productTagRepository: Repository<ProductTag>,
+              @InjectRepository(ProductTag) public readonly productTagRepository: Repository<ProductTag>,
               private awsService: AwsService,
               @Inject(forwardRef(() => CartService)) private cartService: CartService,
-              private tagService: TagService) {
+              @Inject(forwardRef(() => TagService)) private tagService: TagService) {
   }
 
   async getAllProducts(): Promise<Product[]> {
@@ -56,18 +56,19 @@ export class ProductService {
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const product = await this.getProductById(id);
-    const { name, references, price, quantity, description, inStock } = updateProductDto;
+    const { name, references, price, quantity, description } = updateProductDto;
     if (product.name) {
       product.name = name;
     }
     if (product.description) {
       product.description = description;
     }
-    if (product.inStock) {
-      product.inStock = inStock;
-    }
+
     if (product.quantity) {
       product.quantity = quantity;
+    }
+    if (product.quantity === 0) {
+      product.inStock = false;
     }
     if (product.price) {
       product.price = price;
@@ -75,8 +76,34 @@ export class ProductService {
     if (product.references) {
       product.references = references;
     }
+    product.updatedAt = new Date();
     const updatedProduct = await product.save();
     return updatedProduct;
+  }
+
+  async manageProductImages(id: number, data: ManageProductImages,
+                            type: string,
+                            folderName: string,
+                            subFolder: string) {
+    const { newImages, removedImages } = data;
+    const product = await this.getProductById(id);
+    if (removedImages) {
+      for (let i = 0; i < removedImages.length; i++) {
+        await this.awsService.fileDelete(removedImages[i]);
+        product.images = product.images.filter(img => img !== removedImages[i]);
+      }
+      console.log(product.images);
+    }
+    if (newImages) {
+      for (let i = 0; i < newImages.length; i++) {
+        const image = await this.awsService.fileUpload(newImages[i],
+          { folderName: folderName, subFolder: subFolder, type: type });
+        product.images = [...product.images, image];
+      }
+    }
+    const savedProductStatus = await product.save();
+    return savedProductStatus;
+
   }
 
   async addProductToCart(productId: number, cartId: number, createCartProductDto: CreateCartProductDto) {
@@ -97,10 +124,6 @@ export class ProductService {
     return savedCartProduct;
   }
 
-  async updateCartAndProduct(cart: Cart, product: Product, quantity: number) {
-
-  }
-
   async addTagsToProduct(productId: number, payload: InsertTagDto): Promise<ProductTag[]> {
     const product = await this.getProductById(productId);
     let addedProductTags: ProductTag[] = [];
@@ -108,7 +131,7 @@ export class ProductService {
       const productTag = new ProductTag();
       productTag.product = product;
       const tag = await this.tagService.getTagById(payload.tags[i]);
-      productTag.tag = tag;
+      productTag.tagId = tag.id;
       productTag.name = tag.name;
       const newProductTag = await productTag.save();
       addedProductTags = [...addedProductTags, newProductTag];
@@ -116,14 +139,17 @@ export class ProductService {
     return addedProductTags;
   }
 
-  async removeTagsFromProduct(id: number, productTags: number[]): Promise<void> {
+  async removeTagsFromProduct(id: number, payload: InsertTagDto): Promise<Product> {
+
     const product = await this.getProductById(id);
-    for (let i = 0; i < productTags.length; i++) {
-      const productTag = product.productTags.find(ct => ct.id === productTags[i]);
+    for (let i = 0; i < payload.tags.length; i++) {
+      const productTag = product.productTags.find(ct => ct.id === payload.tags[i]);
       if (productTag) {
         await this.productTagRepository.delete(productTag.id);
+        product.productTags = product.productTags.filter(pTag => pTag.id !== productTag.id);
       }
     }
+    return await product.save();
   }
 
   async deleteProduct(id: number) {

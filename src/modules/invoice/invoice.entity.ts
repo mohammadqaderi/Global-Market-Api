@@ -9,6 +9,13 @@ export class Invoice extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // @Column({
+  //   generated: 'increment',
+  //   default: 10001010,
+  //   unique: true,
+  //   update: true,
+  // })
+  // number: string;
   @Column()
   number: string;
 

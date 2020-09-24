@@ -1,29 +1,18 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Put,
-  Req,
-  ParseIntPipe,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
 import { EmailLoginDto } from './dto/email-login.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../../commons/decorators/roles.decorator';
-import { Role } from '../../commons/enums/role.enum';
-import { AcceptedAuthGuard } from '../../commons/guards/accepted-auth.guard';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { GetAuthenticatedUser } from '../../commons/decorators/get-authenticated-user.decorator';
 import { User } from './entities/user.entity';
 import { AdminAuthGuard } from '../../commons/guards/admin-auth.guard';
 import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
-import { ApiBody, ApiCreatedResponse, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
+import { AcceptedAuthGuard } from '../../commons/guards/accepted-auth.guard';
+import { EditRolesDto } from './dto/edit-roles.dto';
+import { UserRole } from '../../commons/enums/user-role.enum';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -32,11 +21,18 @@ export class AuthController {
   constructor(private authService: AuthService) {
   }
 
-  @Post('register')
+  @Post('register/user')
   @ApiBody({ type: AuthCredentialsDto, required: true })
-  signUp(@Body() authCredentialsDto: AuthCredentialsDto,
+  signUpUser(@Body() authCredentialsDto: AuthCredentialsDto,
   ) {
-    return this.authService.signUp(authCredentialsDto);
+    return this.authService.signUpUser(authCredentialsDto);
+  }
+
+  @Post('register/admin')
+  @ApiBody({ type: AuthCredentialsDto, required: true })
+  signUpAdmin(@Body() authCredentialsDto: AuthCredentialsDto,
+  ) {
+    return this.authService.signUpAdmin(authCredentialsDto);
   }
 
   @Get('email/send-email-verification/:email')
@@ -67,6 +63,8 @@ export class AuthController {
   }
 
   @Post('email/reset-password')
+  @UseGuards(AuthGuard(), AcceptedAuthGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN, UserRole.USER)
   @ApiBody({ type: ResetPasswordDto, required: true })
   setNewPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.setNewPassword(resetPasswordDto);
@@ -75,7 +73,7 @@ export class AuthController {
 
   @Delete('delete-user-account')
   @UseGuards(AuthGuard(), UserAuthGuard)
-  @Roles(Role.USER)
+  @Roles(UserRole.USER)
   deleteUserAccount(@GetAuthenticatedUser() user: User) {
     return this.authService.deleteUserAccount(user);
   }
@@ -95,7 +93,7 @@ export class AuthController {
 
   @Get('system-users')
   @UseGuards(AuthGuard(), AdminAuthGuard)
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   getSystemUsers() {
     return this.authService.getSystemUsers();
   }
@@ -109,8 +107,8 @@ export class AuthController {
   @Put('edit-user-roles/:userId')
   @ApiParam({ name: 'userId', type: String, required: true })
   @UseGuards(AuthGuard(), AdminAuthGuard)
-  @Roles(Role.ADMIN)
-  editUserRoles(@Param('userId', ParseIntPipe) userId: number, @Body() roles: Role[]) {
+  @Roles(UserRole.SUPER_ADMIN)
+  editUserRoles(@Param('userId', ParseIntPipe) userId: number, @Body() roles: EditRolesDto) {
     return this.authService.editUserRoles(userId, roles);
   }
 

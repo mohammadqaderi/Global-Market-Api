@@ -94,6 +94,7 @@ export class OrderService {
     if (billingAddress) {
       order.address = billingAddress;
     }
+    order.updatedAt = new Date();
     const updatedOrder = await order.save();
     return updatedOrder;
   }

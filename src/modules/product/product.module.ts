@@ -16,7 +16,7 @@ import { CartModule } from '../cart/cart.module';
     TypeOrmModule.forFeature([ProductRepository, ProductTag]),
     PassportModule.register({
       defaultStrategy: AuthConstants.strategies,
-    }), AwsModule, TagModule, forwardRef(() => CartModule)],
+    }), AwsModule, forwardRef(() => TagModule), forwardRef(() => CartModule)],
   controllers: [ProductController],
   providers: [ProductService],
   exports: [ProductService],

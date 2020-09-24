@@ -54,12 +54,13 @@ export class CartService {
     );
   }
 
-  async completeCreatingInvoiceAndPayment(user: User, createPaymentDto: CreatePaymentDto, order: Order) {
+  async completeCreatingInvoiceAndPayment(user: User, createPaymentDto: CreatePaymentDto, order: Order, cart?: Cart) {
     const { payment, invoice } = await this.paymentService.createPayment(user, createPaymentDto, order);
     return {
       order,
       payment,
       invoice,
+      cart,
     };
   }
 
@@ -69,11 +70,12 @@ export class CartService {
     for (let i = 0; i < cart.cartProducts.length; i++) {
       await this.orderService.createOrderItem(order, cart.cartProducts[i]);
     }
-    await this.clearCart(cart, null, false);
+    const clearedCart = await this.clearCart(cart, null, false);
     return await this.completeCreatingInvoiceAndPayment(
       user,
       createPaymentDto,
       order,
+      clearedCart,
     );
   }
 
@@ -99,12 +101,12 @@ export class CartService {
   }
 
 
-  async clearCart(currentCart?: Cart, id?: number, updateProductQuantity?: boolean) {
+  async clearCart(currentCart?: Cart, id?: number, updateProductQuantity?: boolean): Promise<Cart> {
     if (currentCart) {
-      this.clearCartContent(currentCart, updateProductQuantity);
+      return this.clearCartContent(currentCart, updateProductQuantity);
     } else if (id) {
       const userCart = await this.getUserCart(null, id);
-      this.clearCartContent(userCart, updateProductQuantity);
+      return this.clearCartContent(userCart, updateProductQuantity);
     }
   }
 

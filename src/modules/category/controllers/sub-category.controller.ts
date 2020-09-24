@@ -9,13 +9,17 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  UploadedFiles,
+  UploadedFiles, UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { InsertTagDto } from '../../../shared/dto/insert-tag.dto';
 import { SubCategoryService } from '../services/sub-category.service';
 import { SubCategoryDto } from '../dto/category.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { AuthGuard } from '@nestjs/passport';
+import { AdminAuthGuard } from '../../../commons/guards/admin-auth.guard';
+import { Roles } from '../../../commons/decorators/roles.decorator';
+import { UserRole } from '../../../commons/enums/user-role.enum';
 
 
 @Controller('sub-categories')
@@ -28,7 +32,7 @@ export class SubCategoryController {
     return this.subCategoryService.getAllSubCategories();
   }
 
-  @Get('by-tag-name/:tagName')
+  @Get('search-by-tag-name/:tagName')
   getSubCategoriesByTagName(@Param('tagName') tagName: string) {
     return this.subCategoryService.getSubCategoriesByTagName(tagName);
   }
@@ -39,6 +43,8 @@ export class SubCategoryController {
   }
 
   @Post(':id/new-product/:folderName/:subFolder/:type')
+  @UseGuards(AuthGuard(), AdminAuthGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   @UseInterceptors(FilesInterceptor('images'))
   newProduct(
     @Param('id', ParseIntPipe) id: number,
@@ -47,8 +53,7 @@ export class SubCategoryController {
     @Param('subFolder') subFolder: string,
     @Body('name') name: string,
     @Body('description') description: string,
-    @Body('references') references: number[],
-    @Body('inStock', ParseBoolPipe) inStock: boolean,
+    @Body('references') refArr: any,
     @Body('price', ParseIntPipe) price: number,
     @Body('quantity', ParseIntPipe) quantity: number,
     @UploadedFiles() images: any,
@@ -57,14 +62,15 @@ export class SubCategoryController {
       name,
       description,
       images,
-      inStock,
       quantity,
       price,
-      references,
+      references: refArr ? JSON.parse(refArr) : null,
     });
   }
 
   @Post(':id/add-tags')
+  @UseGuards(AuthGuard(), AdminAuthGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   addTagsToCategory(@Param('id', ParseIntPipe) id: number,
                     @Body() payload: InsertTagDto) {
     return this.subCategoryService.addTagsToCategory(id, payload);
@@ -72,20 +78,27 @@ export class SubCategoryController {
   }
 
   @Delete(':id/delete')
+  @UseGuards(AuthGuard(), AdminAuthGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   deleteSubCategory(@Param('id', ParseIntPipe) id: number) {
     return this.subCategoryService.deleteSubCategory(id);
   }
 
   @Put(':id/update')
+  @UseGuards(AuthGuard(), AdminAuthGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   updateSubCategory(@Param('id', ParseIntPipe) id: number,
                     @Body() updateSubCategoryDto: SubCategoryDto) {
     return this.subCategoryService.updateSubCategory(id, updateSubCategoryDto);
   }
 
   @Delete(':id/remove-tags')
+  @UseGuards(AuthGuard(), AdminAuthGuard)
+  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   removeTagsFromCategory(@Param('id', ParseIntPipe) id: number,
-                         @Body('tags', ParseArrayPipe) categoryTags: number[]) {
-    return this.subCategoryService.removeTagsFromCategory(id, categoryTags);
+                         @Body() data: any) {
+    const { payload } = data;
+    return this.subCategoryService.removeTagsFromCategory(id, payload);
 
   }
 
