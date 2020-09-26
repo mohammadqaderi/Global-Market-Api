@@ -20,6 +20,10 @@ export class InvoiceService {
     return await this.invoiceRepository.find();
   }
 
+  async getTotalInvoices() {
+    return await this.invoiceRepository.createQueryBuilder().getCount();
+  }
+
   async getUserInvoices(user: User): Promise<Invoice[]> {
     return await this.invoiceRepository.find({
       where: {

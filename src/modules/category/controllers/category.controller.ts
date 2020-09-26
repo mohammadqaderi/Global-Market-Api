@@ -17,7 +17,6 @@ export class CategoryController {
     return this.categoryService.getAllCategories();
   }
 
-
   @Post()
   @UseGuards(AuthGuard(), AdminAuthGuard)
   @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)

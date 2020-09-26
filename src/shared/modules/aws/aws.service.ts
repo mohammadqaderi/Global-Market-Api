@@ -20,17 +20,18 @@ s3.config.update({
 @Injectable()
 export class AwsService {
 
-  async uploadImage() {
-
+  async getAllFiles() {
+    return new Promise((resolve, reject) => {
+      s3.listObjects({ Bucket: AwsConfig.AWS_S3_BUCKET_NAME },
+        (err, data: AWS.S3.Types.ListObjectsOutput) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(data);
+        });
+    });
   }
 
-  async uploadProfileImage(file: any, options: UploadOptions) {
-
-  }
-
-  async uploadProductImage() {
-
-  }
 
   async fileUpload(file: any, options: UploadOptions): Promise<string> {
     const { folderName, subFolder, type } = options;

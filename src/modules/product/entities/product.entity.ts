@@ -1,7 +1,6 @@
 import { Column, Entity, ManyToOne, OneToMany, Unique } from 'typeorm';
 import { AbstractProduct } from '../../../commons/classes/abstract-product';
 import { ProductTag } from './product-tag.entity';
-import { CartProduct } from '../../cart/entities/cart-product.entity';
 import { SubCategory } from '../../category/entities/sub-category.entity';
 
 
@@ -31,7 +30,17 @@ export class Product extends AbstractProduct {
   @Column('float', {
     default: 0.0,
   })
-  price: number;
+  currentPrice: number;
+
+  @Column('float', {
+    nullable: true,
+  })
+  previousPrice: number;
+
+  @Column({
+    default: 0,
+  })
+  sales: number;
 
   @OneToMany(type => ProductTag, productTag => productTag.product, {
     eager: true,

@@ -6,7 +6,6 @@ export class ProductRepository extends Repository<Product> {
 
 
   async getProductsByTagName(tag: string) {
-    console.log(tag);
     const queryBuilder = this.getQueryBuilder();
     const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
       .where('productTag.productId IS NOT NULL AND productTag.name LIKE :name', { name: tag }).getMany();
@@ -32,6 +31,17 @@ export class ProductRepository extends Repository<Product> {
       .limit(limit).getMany();
 
     return products;
+  }
+
+  async getTotalProducts() {
+    return await this.createQueryBuilder().getCount();
+  }
+
+  async getTotalSales(): Promise<number> {
+    const { sum } = await this
+      .createQueryBuilder('product')
+      .select('SUM(product.sales)', 'sum').getRawOne();
+    return sum ? sum : 0;
   }
 
   async filterByExistenceInStock(limit: number, inStock?: boolean, outOfStock?: boolean) {

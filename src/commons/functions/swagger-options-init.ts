@@ -1,13 +1,13 @@
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AuthModule } from './modules/auth/auth.module';
-import { ProfileModule } from './modules/profile/profile.module';
-import { CartModule } from './modules/cart/cart.module';
-import { CategoryModule } from './modules/category/category.module';
-import { ProductModule } from './modules/product/product.module';
-import { TagModule } from './modules/tag/tag.module';
-import { PaymentModule } from './modules/payment/payment.module';
-import { OrderModule } from './modules/order/order.module';
-import { InvoiceModule } from './modules/invoice/invoice.module';
+import { AuthModule } from '../../modules/auth/auth.module';
+import { ProfileModule } from '../../modules/profile/profile.module';
+import { CartModule } from '../../modules/cart/cart.module';
+import { CategoryModule } from '../../modules/category/category.module';
+import { ProductModule } from '../../modules/product/product.module';
+import { TagModule } from '../../modules/tag/tag.module';
+import { PaymentModule } from '../../modules/payment/payment.module';
+import { OrderModule } from '../../modules/order/order.module';
+import { InvoiceModule } from '../../modules/invoice/invoice.module';
 
 interface DocumentData {
   title: string;

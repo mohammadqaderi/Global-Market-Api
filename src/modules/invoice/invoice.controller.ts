@@ -23,6 +23,8 @@ export class InvoiceController {
     return this.invoiceService.getAllInvoices();
   }
 
+
+
   @Get('user')
   @UseGuards(AuthGuard(), UserAuthGuard)
   @Roles(UserRole.USER)

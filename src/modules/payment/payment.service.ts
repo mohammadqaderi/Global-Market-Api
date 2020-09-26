@@ -20,6 +20,10 @@ export class PaymentService {
     return await this.paymentRepository.find();
   }
 
+  async getTotalPayments() {
+    return await this.paymentRepository.createQueryBuilder().getCount();
+  }
+
   async getUserPayments(user: User): Promise<Payment[]> {
     return await this.paymentRepository.find({
       where: {

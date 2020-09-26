@@ -6,6 +6,7 @@ import { Invoice } from '../../invoice/invoice.entity';
 import { Payment } from '../../payment/payment.entity';
 import { Order } from '../../order/entities/order.entity';
 import { UserRole } from '../../../commons/enums/user-role.enum';
+import { Subscriber } from '../../notification/entities/subscriber.entity';
 
 @Entity('users')
 @Unique(['username', 'email'])
@@ -16,17 +17,13 @@ export class User extends BaseEntity {
   @Column()
   username: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   password: string;
 
   @Column()
   email: string;
 
-  @Column({
-    nullable: true,
-  })
+  @Column()
   salt: string;
 
   @Column({
@@ -83,12 +80,13 @@ export class User extends BaseEntity {
   cartId: number;
 
 
-  // @OneToOne(type => Subscriber, subscriber => subscriber.user)
-  // @JoinColumn()
-  // subscriber: Subscriber;
-  // @Column({
-  //   nullable: true,
-  // })
-  // subscriberId: number;
+  @OneToOne(type => Subscriber, subscriber => subscriber.user)
+  @JoinColumn()
+  subscriber: Subscriber;
+
+  @Column({
+    nullable: true,
+  })
+  subscriberId: number;
 
 }

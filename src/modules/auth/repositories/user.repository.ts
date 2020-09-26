@@ -21,6 +21,15 @@ export class UserRepository extends Repository<User> {
     return users;
   }
 
+  async pagination() {
+    const users = await this
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.payments', 'payment')
+      .take(10)
+      .getMany();
+    return users;
+  }
+
   async validateUserPassword(emailLoginDto: EmailLoginDto): Promise<{ email: string, user: User }> {
     const { email, password } = emailLoginDto;
     const user = await this.findByEmail(email);

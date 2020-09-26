@@ -9,16 +9,37 @@ import { OrderItem } from './entities/order-item.entity';
 import { CartProduct } from '../cart/entities/cart-product.entity';
 import { ThrowErrors } from '../../commons/functions/throw-errors';
 import NotFound = ThrowErrors.NotFound;
+import { ProductService } from '../product/product.service';
 
 
 @Injectable()
 export class OrderService {
   constructor(@InjectRepository(Order) private readonly orderRepository: Repository<Order>,
-              @InjectRepository(OrderItem) private readonly orderItemRepository: Repository<OrderItem>) {
+              @InjectRepository(OrderItem) private readonly orderItemRepository: Repository<OrderItem>,
+              private productService: ProductService) {
   }
 
   async getAllOrders(): Promise<Order[]> {
-    return await this.orderRepository.find();
+    let orders = await this.orderRepository.find();
+    orders = await this.checkOrdersStatus(orders);
+    return orders;
+  }
+
+  async getTotalOrders() {
+    return await this.orderRepository.createQueryBuilder().getCount();
+  }
+
+  async checkOrdersStatus(orders: Order[]) {
+    for (let i = 0; i < orders.length; i++) {
+      if (orders[i].createdAt.getTime() === orders[i].shipmentDate.getTime()) {
+        orders[i].status = OrderStatus.SHIPPED;
+        await orders[i].save();
+      } else if (orders[i].createdAt.getTime() > orders[i].shipmentDate.getTime()) {
+        orders[i].status = OrderStatus.DELIVERED;
+        await orders[i].save();
+      }
+    }
+    return orders;
   }
 
   async getOrderItems(orderId: number) {
@@ -31,17 +52,12 @@ export class OrderService {
   }
 
   async getUserOrders(user: User): Promise<Order[]> {
-    const userOrders = await this.orderRepository.find({
+    let userOrders = await this.orderRepository.find({
       where: {
         userId: user,
       },
     });
-    for (let i = 0; i < userOrders.length; i++) {
-      if (userOrders[i].createdAt.getTime() === userOrders[i].shipmentDate.getTime()) {
-        userOrders[i].status = OrderStatus.SHIPPED;
-        await userOrders[i].save();
-      }
-    }
+    userOrders = await this.checkOrdersStatus(userOrders);
     return userOrders;
   }
 
@@ -100,6 +116,9 @@ export class OrderService {
   }
 
   async createOrderItem(order: Order, cartProduct: CartProduct): Promise<OrderItem> {
+    const product = await this.productService.getProductById(cartProduct.productId);
+    product.sales += 1;
+    await product.save();
     const orderItem = new OrderItem();
     orderItem.order = order;
     orderItem.productId = cartProduct.productId;

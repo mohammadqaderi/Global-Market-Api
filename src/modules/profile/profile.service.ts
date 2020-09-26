@@ -13,6 +13,10 @@ export class ProfileService {
               private awsService: AwsService) {
   }
 
+  async getTotalProfiles() {
+    return await this.profileRepository.createQueryBuilder().getCount();
+  }
+
   async getProfileData(user: User): Promise<Profile> {
     const profile = await this.profileRepository.findOne({
       where: {

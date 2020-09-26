@@ -33,6 +33,9 @@ export class CartService {
     return savedCart;
   }
 
+  async getTotalCarts() {
+    return await this.cartRepository.createQueryBuilder().getCount();
+  }
 
   async checkoutOnSingleProduct(user: User,
                                 cartProductId: number,

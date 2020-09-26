@@ -4,8 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseArrayPipe,
-  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Put,
@@ -54,7 +52,7 @@ export class SubCategoryController {
     @Body('name') name: string,
     @Body('description') description: string,
     @Body('references') refArr: any,
-    @Body('price', ParseIntPipe) price: number,
+    @Body('currentPrice', ParseIntPipe) currentPrice: number,
     @Body('quantity', ParseIntPipe) quantity: number,
     @UploadedFiles() images: any,
   ) {
@@ -63,7 +61,7 @@ export class SubCategoryController {
       description,
       images,
       quantity,
-      price,
+      currentPrice,
       references: refArr ? JSON.parse(refArr) : null,
     });
   }

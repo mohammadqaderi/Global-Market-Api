@@ -41,6 +41,10 @@ export class AuthService {
 
   }
 
+  async pagination() {
+    return this.userRepository.pagination();
+  }
+
   async signUpAdmin(authCredentialsDto: AuthCredentialsDto): Promise<{ admin: User, token: string }> {
     const admin = await this.setUserOrAdminBaseData(authCredentialsDto);
     admin.claims = [UserRole.WEAK_ADMIN];
@@ -100,9 +104,14 @@ export class AuthService {
 
   }
 
+  async getTotalUsers() {
+    return await this.userRepository.createQueryBuilder().getCount();
+  }
 
   async findUserByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne({ email });
+    return await this.userRepository.findOne({
+      where: { email },
+    });
   }
 
 
@@ -191,7 +200,7 @@ export class AuthService {
 
 
   async sendEmailForgottenPassword(email: string): Promise<any> {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.findUserByEmail(email);
     if (!user) {
       throw new NotFoundException('LOGIN_USER_NOT_FOUND');
     }
@@ -234,22 +243,17 @@ export class AuthService {
 
   async setNewPassword(resetPasswordDto: ResetPasswordDto) {
     let isNewPasswordChanged = false;
-    const { email, newPasswordToken, currentPassword, newPassword } = resetPasswordDto;
-    if (email && currentPassword) {
-      const isValidPassword = await this.checkPassword(email, currentPassword);
-      if (isValidPassword) {
-        isNewPasswordChanged = await this.setPassword(email, newPassword);
-      } else {
-        throw new ConflictException('RESET_PASSWORD_WRONG_CURRENT_PASSWORD');
-      }
-    } else if (newPasswordToken) {
+    const { newPasswordToken, newPassword } = resetPasswordDto;
+    if (newPasswordToken) {
       const forgottenPassword = await this.forgottenPasswordRepo.findOne({ newPasswordToken });
       isNewPasswordChanged = await this.setPassword(forgottenPassword.email, newPassword);
       if (isNewPasswordChanged) {
         await this.forgottenPasswordRepo.delete(forgottenPassword.id);
+      } else {
+        return new ConflictException('You did not send a forgot password request , try to send a new request');
       }
     } else {
-      return new ConflictException('RESET_PASSWORD_CHANGE_PASSWORD_ERROR');
+      return new ConflictException('You have entered invalid token');
     }
     return isNewPasswordChanged;
   }

@@ -30,6 +30,14 @@ export class ProductService {
     return await this.productRepository.find();
   }
 
+  async getTotalProducts() {
+    return await this.productRepository.getTotalProducts();
+  }
+
+  async getTotalSales() {
+    return await this.productRepository.getTotalSales();
+  }
+
   async getProductById(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: {
@@ -56,7 +64,7 @@ export class ProductService {
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const product = await this.getProductById(id);
-    const { name, references, price, quantity, description } = updateProductDto;
+    const { name, references, currentPrice, quantity, description } = updateProductDto;
     if (product.name) {
       product.name = name;
     }
@@ -70,8 +78,9 @@ export class ProductService {
     if (product.quantity === 0) {
       product.inStock = false;
     }
-    if (product.price) {
-      product.price = price;
+    if (product.currentPrice) {
+      product.currentPrice = currentPrice;
+      product.previousPrice = product.currentPrice;
     }
     if (product.references) {
       product.references = references;
@@ -92,7 +101,6 @@ export class ProductService {
         await this.awsService.fileDelete(removedImages[i]);
         product.images = product.images.filter(img => img !== removedImages[i]);
       }
-      console.log(product.images);
     }
     if (newImages) {
       for (let i = 0; i < newImages.length; i++) {
@@ -114,7 +122,7 @@ export class ProductService {
     cartProduct.productId = product.id;
     cartProduct.image = product.images[0];
     cartProduct.quantity = quantity;
-    cartProduct.totalPrice = product.price * quantity;
+    cartProduct.totalPrice = product.currentPrice * quantity;
     cartProduct.name = product.name;
     cart.totalItems += 1;
     product.quantity = product.quantity - quantity;

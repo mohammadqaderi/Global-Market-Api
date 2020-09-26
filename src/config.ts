@@ -32,6 +32,10 @@ export namespace Config {
       },
     },
   };
+  export const VapidKeys = {
+    publicKey: 'BKmeS0raBK4YrI7tiG3FaQ-TQJJjq-b4YsqxbiNgcTidYR3yvEkfLRFrFiljjAcXuNcVLErufWJ2pvhsN0O7uN8',
+    privateKey: 'Psk8q_qyekL2hrPwnYF8k-ckTmb8JRmjBUBsmv9FquY',
+  };
   export const FrontEndKeys = {
     url: 'localhost',
     port: 4200,

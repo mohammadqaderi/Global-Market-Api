@@ -22,7 +22,7 @@ import { SubCategoryRepository } from './repositories/sub-category.repository';
     }), AwsModule, forwardRef(() => TagModule),forwardRef(() => ProductModule)],
   controllers: [CategoryController, SubCategoryController],
   providers: [CategoryService, SubCategoryService],
-  exports: [SubCategoryService]
+  exports: [SubCategoryService, CategoryService]
 })
 export class CategoryModule {
 

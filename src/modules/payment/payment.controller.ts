@@ -23,6 +23,7 @@ export class PaymentController {
     return this.paymentService.getAllPayments();
   }
 
+
   @Get('user')
   @UseGuards(AuthGuard(), UserAuthGuard)
   @Roles(UserRole.USER)

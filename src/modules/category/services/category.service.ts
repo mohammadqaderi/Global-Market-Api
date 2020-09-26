@@ -20,6 +20,10 @@ export class CategoryService {
     return await this.categoryRepository.find();
   }
 
+  async getTotalCategories() {
+    return await this.categoryRepository.createQueryBuilder().getCount();
+  }
+
   async getCategoryById(id: number): Promise<Category> {
     const category = await this.categoryRepository.findOne({
       where: {

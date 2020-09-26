@@ -6,13 +6,14 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/order-item.entity';
+import { ProductModule } from '../product/product.module';
 
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, OrderItem]),
     PassportModule.register({
       defaultStrategy: AuthConstants.strategies,
-    })],
+    }), ProductModule],
   providers: [OrderService],
   controllers: [OrderController],
   exports: [OrderService],

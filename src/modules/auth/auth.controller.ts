@@ -63,8 +63,6 @@ export class AuthController {
   }
 
   @Post('email/reset-password')
-  @UseGuards(AuthGuard(), AcceptedAuthGuard)
-  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN, UserRole.USER)
   @ApiBody({ type: ResetPasswordDto, required: true })
   setNewPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.setNewPassword(resetPasswordDto);
@@ -96,6 +94,11 @@ export class AuthController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   getSystemUsers() {
     return this.authService.getSystemUsers();
+  }
+
+  @Get('pagination')
+  pagination() {
+    return this.authService.pagination();
   }
 
   @Get('users/:id')

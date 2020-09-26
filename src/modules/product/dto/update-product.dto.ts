@@ -39,12 +39,12 @@ export class UpdateProductDto {
     type: Number,
     name: 'price',
     description: `
-        This is the price of the product, you must enter the price of the product as shown on the product label
+        This is the current price of the product, you must enter the price of the product as shown on the product label
     `,
     required: true,
     title: 'Product',
   })
-  price: number;
+  currentPrice: number;
 
   @ApiProperty({
     type: [Number],

@@ -17,7 +17,9 @@ export class TagService {
   async getAllTags(): Promise<Tag[]> {
     return await this.tagRepo.find();
   }
-
+  async getTotalTags() {
+    return await this.tagRepo.createQueryBuilder().getCount();
+  }
   async createNewTag(createTagDto: TagDto): Promise<Tag> {
     const { name } = createTagDto;
     const tag = new Tag();

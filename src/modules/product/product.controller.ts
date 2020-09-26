@@ -35,6 +35,15 @@ export class ProductController {
     return this.productService.getAllProducts();
   }
 
+  @Get('count')
+  getTotalProducts() {
+    return this.productService.getTotalProducts();
+  }
+  @Get('sales')
+  getTotalSales() {
+    return this.productService.getTotalSales();
+  }
+
   @Get('filtered-by-range')
   getFilteredBetweenRange(@Query('range1', ParseIntPipe) range1: number,
                           @Query('range2', ParseIntPipe) range2: number) {

@@ -22,6 +22,11 @@ export class CartController {
     return this.cartService.createCart(user);
   }
 
+  @Get('count')
+  getTotalCarts() {
+    return this.cartService.getTotalCarts();
+  }
+
   @Get('user-cart')
   getUserCart(@GetAuthenticatedUser() user: User) {
     return this.cartService.getUserCart(user);

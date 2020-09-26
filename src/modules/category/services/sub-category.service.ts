@@ -28,6 +28,10 @@ export class SubCategoryService {
     return await this.subCategoryRepository.find();
   }
 
+  async getTotalSubCategories() {
+    return await this.subCategoryRepository.createQueryBuilder().getCount();
+  }
+
   async getSubCategoriesByTagName(tagName: string) {
     return await this.subCategoryRepository.getSubCategoriesByTagName(tagName);
   }
@@ -49,21 +53,21 @@ export class SubCategoryService {
     description: string,
     images: any,
     quantity: number,
-    price: number,
+    currentPrice: number,
     references: any
   }) {
     const subCategory = await this.getSubCategory(subCategoryId);
-    const { name, description, references, images, price, quantity } = productPayload;
+    const { name, description, references, images, currentPrice, quantity } = productPayload;
     const product = new Product();
     product.name = name;
     product.description = description;
     product.references = [];
-    if(references){
+    if (references) {
       for (let i = 0; i < references.length; i++) {
         product.references.push(+references[i]);
       }
     }
-    product.price = price;
+    product.currentPrice = currentPrice;
     product.images = [];
     product.quantity = quantity;
     product.productTags = [];
