@@ -58,9 +58,9 @@ export class AuthService {
     if (!this.isValidEmail(email)) {
       throw new BadRequestException('You have entered invalid email');
     }
-    // if (!(await this.isEmailActivated(email))) {
-    //   throw new ConflictException(`Your Email is not valid to use in our environment or other environments, please check if this email is valid to use in its service provider`);
-    // }
+    if (!(await this.isEmailActivated(email))) {
+      throw new ConflictException(`Your Email is not valid to use in our environment or other environments, please check if this email is valid to use in its service provider`);
+    }
     const user = new User();
     user.salt = await bcrypt.genSalt();
 
@@ -86,8 +86,8 @@ export class AuthService {
     const user = await this.setUserOrAdminBaseData(authCredentialsDto);
     const { email } = authCredentialsDto;
     user.claims = [UserRole.USER];
-    // await this.createEmailToken(email);
-    // await this.sendEmailVerification(email);
+    await this.createEmailToken(email);
+    await this.sendEmailVerification(email);
     const token = this.generateJwtToken(email);
     return { user: await user.save(), token };
   }

@@ -14,6 +14,7 @@ import { PaymentModule } from '../../modules/payment/payment.module';
 import { EmailModule } from '../../shared/modules/email/email.module';
 import { GlobalDataModule } from '../../shared/global-data/global-data.module';
 import { NotificationModule } from '../../modules/notification/notification.module';
+import { ActivityModule } from '../../gateways/activity/activity.module';
 
 export const MainModules = [
   TypeOrmModule.forRoot(Config.DbConfig as TypeOrmModuleOptions),
@@ -45,4 +46,5 @@ export const MainModules = [
   EmailModule,
   GlobalDataModule,
   NotificationModule,
+  ActivityModule,
 ];

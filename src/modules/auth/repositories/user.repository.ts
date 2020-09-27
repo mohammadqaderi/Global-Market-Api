@@ -56,7 +56,7 @@ export class UserRepository extends Repository<User> {
     if (admin && (await admin.validatePassword(password))) {
       return { email, admin };
     } else {
-      throw new BadRequestException('Your Password in incorrect, please enter another one');
+      throw new BadRequestException('Your Password is incorrect, please enter another one');
     }
   }
 
