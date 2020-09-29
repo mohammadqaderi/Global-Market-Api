@@ -39,9 +39,21 @@ export class ProductController {
   getTotalProducts() {
     return this.productService.getTotalProducts();
   }
+
   @Get('sales')
   getTotalSales() {
     return this.productService.getTotalSales();
+  }
+
+  @Get('current-month')
+  async getCurrentMonthProducts() {
+    return await this.productService.getCurrentMonthProducts();
+  }
+
+
+  @Get('most-sales')
+  async getMostSalesProducts() {
+    return await this.productService.getMostSalesProducts();
   }
 
   @Get('filtered-by-range')

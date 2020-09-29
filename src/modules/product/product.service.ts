@@ -34,6 +34,19 @@ export class ProductService {
     return await this.productRepository.getTotalProducts();
   }
 
+  async getCurrentMonthProducts() {
+    return await this.productRepository.getCurrentMonthProducts();
+  }
+
+  async getLatestProducts() {
+    return await this.productRepository.getLatestProducts();
+  }
+
+  async getMostSalesProducts() {
+    return await this.productRepository.getMostSalesProducts();
+  }
+
+
   async getTotalSales() {
     return await this.productRepository.getTotalSales();
   }

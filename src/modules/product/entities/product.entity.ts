@@ -55,7 +55,7 @@ export class Product extends AbstractProduct {
   subCategory: SubCategory;
 
   @Column({
-    default: new Date(),
+    default: new Date(Date.now()),
   })
   createdAt: Date;
 

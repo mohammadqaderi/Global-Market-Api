@@ -12,10 +12,26 @@ export class ProductRepository extends Repository<Product> {
     return products;
   }
 
-  async getLimitedProducts(limit: number) {
+  async getCurrentMonthProducts() {
+    const queryBuilder = this.getQueryBuilder();
+    const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag').getMany();
+    const filteredProducts = [].concat(products.filter(p => p.createdAt.getDay() === new Date(Date.now()).getDay()));
+    return filteredProducts;
+  }
+
+  async getLatestProducts() {
     const queryBuilder = this.getQueryBuilder();
     const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
-      .limit(limit).getMany();
+      .take(10).orderBy('product.createdAt').getMany();
+    return products;
+  }
+
+  async getMostSalesProducts() {
+    const queryBuilder = this.getQueryBuilder();
+    const products = await queryBuilder.orderBy({
+      'product.sales': 'DESC',
+    }).leftJoinAndSelect('product.productTags', 'productTag')
+      .take(10).getMany();
     return products;
   }
 
@@ -28,7 +44,7 @@ export class ProductRepository extends Repository<Product> {
     const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
       .where('product.price >= :range1', { range1: range1 })
       .andWhere('product.price <= :range2', { range2: range2 })
-      .limit(limit).getMany();
+      .take(limit).getMany();
 
     return products;
   }
