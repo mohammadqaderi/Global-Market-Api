@@ -14,8 +14,8 @@ export class ProductRepository extends Repository<Product> {
 
   async getCurrentMonthProducts() {
     const queryBuilder = this.getQueryBuilder();
-    const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag').getMany();
-    const filteredProducts = [].concat(products.filter(p => p.createdAt.getDay() === new Date(Date.now()).getDay()));
+    const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag').take(16).getMany();
+    const filteredProducts = [].concat(products.filter(p => p.createdAt.getMonth() === new Date(Date.now()).getMonth()));
     return filteredProducts;
   }
 
