@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseArrayPipe,
   ParseBoolPipe,
   ParseIntPipe,
   Post,
@@ -34,6 +33,12 @@ export class ProductController {
   getAllProducts() {
     return this.productService.getAllProducts();
   }
+
+  @Get('shop')
+  getShopProducts(@Query('take', ParseIntPipe) take: number) {
+    return this.productService.getShopProducts(take);
+  }
+
 
   @Get('count')
   getTotalProducts() {

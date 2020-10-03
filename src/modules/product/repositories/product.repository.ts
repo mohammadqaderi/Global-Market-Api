@@ -4,6 +4,12 @@ import { Product } from '../entities/product.entity';
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
 
+  async getShopProducts(take: number) {
+    const queryBuilder = this.getQueryBuilder();
+    const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
+      .take(take).getMany();
+    return products;
+  }
 
   async getProductsByTagName(tag: string) {
     const queryBuilder = this.getQueryBuilder();
@@ -14,8 +20,9 @@ export class ProductRepository extends Repository<Product> {
 
   async getCurrentMonthProducts() {
     const queryBuilder = this.getQueryBuilder();
+    const currentMonth = new Date().getMonth();
     const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag').take(16).getMany();
-    const filteredProducts = [].concat(products.filter(p => p.createdAt.getMonth() === new Date(Date.now()).getMonth()));
+    const filteredProducts = [].concat(products.filter(p => (p.createdAt.getMonth() + 1) === currentMonth));
     return filteredProducts;
   }
 

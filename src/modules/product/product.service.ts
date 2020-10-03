@@ -30,6 +30,10 @@ export class ProductService {
     return await this.productRepository.find();
   }
 
+  async getShopProducts(take: number) {
+    return await this.productRepository.getShopProducts(take);
+  }
+
   async getTotalProducts() {
     return await this.productRepository.getTotalProducts();
   }
