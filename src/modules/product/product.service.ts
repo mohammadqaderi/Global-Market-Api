@@ -14,6 +14,7 @@ import { CartService } from '../cart/cart.service';
 import { CartProduct } from '../cart/entities/cart-product.entity';
 import { CreateCartProductDto } from '../cart/dto/create-cart-product.dto';
 import { ManageProductImages } from '../../commons/interfaces/manage-product-images.interface';
+import { GetProductsByRangeDto } from './dto/get-products-by-range.dto';
 
 
 @Injectable()
@@ -71,8 +72,8 @@ export class ProductService {
     return await this.productRepository.getProductsByTagName(tagName);
   }
 
-  async getFilteredBetweenRange(range1: number, range2: number) {
-    return await this.productRepository.filterByRangePrice(6, range1, range2);
+  async getFilteredBetweenRange(getProductsByRangeDto: GetProductsByRangeDto) {
+    return await this.productRepository.filterByRangePrice(getProductsByRangeDto);
   }
 
   async getFilteredByStockExistence(stock: boolean) {

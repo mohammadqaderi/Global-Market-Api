@@ -1,5 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Product } from '../entities/product.entity';
+import { GetProductsByRangeDto } from '../dto/get-products-by-range.dto';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -46,13 +47,19 @@ export class ProductRepository extends Repository<Product> {
     return this.createQueryBuilder('product');
   }
 
-  async filterByRangePrice(limit: number, range1: number, range2: number) {
+  async filterByRangePrice(getProductsByRangeDto: GetProductsByRangeDto) {
+    const { range1, range2, skip, take } = getProductsByRangeDto;
     const queryBuilder = this.getQueryBuilder();
-    const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
-      .where('product.price >= :range1', { range1: range1 })
-      .andWhere('product.price <= :range2', { range2: range2 })
-      .take(limit).getMany();
-
+    queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
+      .where('product.currentPrice >= :range1', { range1: range1 })
+      .andWhere('product.currentPrice <= :range2', { range2: range2 });
+    if (take) {
+      queryBuilder.take(take);
+    }
+    if (skip) {
+      queryBuilder.skip(skip);
+    }
+    const products = await queryBuilder.getMany();
     return products;
   }
 

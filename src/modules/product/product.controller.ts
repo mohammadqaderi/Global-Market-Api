@@ -22,6 +22,7 @@ import { AdminAuthGuard } from '../../commons/guards/admin-auth.guard';
 import { Roles } from '../../commons/decorators/roles.decorator';
 import { UserRole } from '../../commons/enums/user-role.enum';
 import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
+import { GetProductsByRangeDto } from './dto/get-products-by-range.dto';
 
 
 @Controller('products')
@@ -61,10 +62,9 @@ export class ProductController {
     return await this.productService.getMostSalesProducts();
   }
 
-  @Get('filtered-by-range')
-  getFilteredBetweenRange(@Query('range1', ParseIntPipe) range1: number,
-                          @Query('range2', ParseIntPipe) range2: number) {
-    return this.productService.getFilteredBetweenRange(range1, range2);
+  @Post('filtered-by-range')
+  getFilteredBetweenRange(@Body() getProductsByRangeDto: GetProductsByRangeDto) {
+    return this.productService.getFilteredBetweenRange(getProductsByRangeDto);
   }
 
   @Get('filtered-by-stock-existence')
