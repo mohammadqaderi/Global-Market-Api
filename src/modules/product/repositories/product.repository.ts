@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Product } from '../entities/product.entity';
-import { GetProductsByRangeDto } from '../dto/get-products-by-range.dto';
+import { ProductsCustomFilterDto } from '../dto/products-custom-filter.dto';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -47,21 +47,6 @@ export class ProductRepository extends Repository<Product> {
     return this.createQueryBuilder('product');
   }
 
-  async filterByRangePrice(getProductsByRangeDto: GetProductsByRangeDto) {
-    const { range1, range2, skip, take } = getProductsByRangeDto;
-    const queryBuilder = this.getQueryBuilder();
-    queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
-      .where('product.currentPrice >= :range1', { range1: range1 })
-      .andWhere('product.currentPrice <= :range2', { range2: range2 });
-    if (take) {
-      queryBuilder.take(take);
-    }
-    if (skip) {
-      queryBuilder.skip(skip);
-    }
-    const products = await queryBuilder.getMany();
-    return products;
-  }
 
   async getTotalProducts() {
     return await this.createQueryBuilder().getCount();
@@ -74,15 +59,34 @@ export class ProductRepository extends Repository<Product> {
     return sum ? sum : 0;
   }
 
-  async filterByExistenceInStock(limit: number, inStock?: boolean, outOfStock?: boolean) {
+
+  async customFilter(productsCustomFilterDto: ProductsCustomFilterDto) {
+    const { range1, range2, skip, stock, take } = productsCustomFilterDto;
     const queryBuilder = this.getQueryBuilder();
-    queryBuilder.leftJoinAndSelect('product.productTags', 'productTag');
-    if (inStock) {
-      queryBuilder.where('product.inStock = :stock', { stock: inStock });
-    } else {
-      queryBuilder.where('product.inStock != :stock', { stock: outOfStock });
+    queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
+      .where('product.id IS NOT NULL');
+    if (range1) {
+      queryBuilder.andWhere('product.currentPrice >= :range1', { range1: range1 });
     }
-    const products = await queryBuilder.limit(limit).getMany();
+    if (range2) {
+      queryBuilder.andWhere('product.currentPrice <= :range2', { range2: range2 });
+    }
+    if (stock) {
+      const inStock = stock === 'In Stock';
+      if (inStock) {
+        queryBuilder.andWhere('product.inStock = :stock', { stock: true });
+      } else {
+        queryBuilder.andWhere('product.inStock = :stock', { stock: false });
+      }
+    }
+    if (skip) {
+      queryBuilder.skip(skip);
+    }
+    if (take) {
+      queryBuilder.take(take);
+    }
+
+    let products = await queryBuilder.getMany();
     return products;
   }
 }

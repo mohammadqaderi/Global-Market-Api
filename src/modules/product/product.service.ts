@@ -15,6 +15,7 @@ import { CartProduct } from '../cart/entities/cart-product.entity';
 import { CreateCartProductDto } from '../cart/dto/create-cart-product.dto';
 import { ManageProductImages } from '../../commons/interfaces/manage-product-images.interface';
 import { GetProductsByRangeDto } from './dto/get-products-by-range.dto';
+import { ProductsCustomFilterDto } from './dto/products-custom-filter.dto';
 
 
 @Injectable()
@@ -38,6 +39,14 @@ export class ProductService {
   async getTotalProducts() {
     return await this.productRepository.getTotalProducts();
   }
+
+  async customFilter(productsCustomFilterDto: ProductsCustomFilterDto) {
+    return await this.productRepository.customFilter(productsCustomFilterDto);
+  }
+
+  // async getByCustomDate(date: Date, take: number) {
+  //   return await this.productRepository.getByCustomDate(date, take);
+  // }
 
   async getCurrentMonthProducts() {
     return await this.productRepository.getCurrentMonthProducts();
@@ -72,13 +81,13 @@ export class ProductService {
     return await this.productRepository.getProductsByTagName(tagName);
   }
 
-  async getFilteredBetweenRange(getProductsByRangeDto: GetProductsByRangeDto) {
-    return await this.productRepository.filterByRangePrice(getProductsByRangeDto);
-  }
-
-  async getFilteredByStockExistence(stock: boolean) {
-    return await this.productRepository.filterByExistenceInStock(6, stock);
-  }
+  // async getFilteredBetweenRange(getProductsByRangeDto: GetProductsByRangeDto) {
+  //   return await this.productRepository.filterByRangePrice(getProductsByRangeDto);
+  // }
+  //
+  // async getFilteredByStockExistence(stock: boolean, take: number) {
+  //   return await this.productRepository.filterByExistenceInStock(stock, take);
+  // }
 
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const product = await this.getProductById(id);

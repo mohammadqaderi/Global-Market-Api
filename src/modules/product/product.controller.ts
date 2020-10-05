@@ -23,6 +23,7 @@ import { Roles } from '../../commons/decorators/roles.decorator';
 import { UserRole } from '../../commons/enums/user-role.enum';
 import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
 import { GetProductsByRangeDto } from './dto/get-products-by-range.dto';
+import { ProductsCustomFilterDto } from './dto/products-custom-filter.dto';
 
 
 @Controller('products')
@@ -62,15 +63,23 @@ export class ProductController {
     return await this.productService.getMostSalesProducts();
   }
 
-  @Post('filtered-by-range')
-  getFilteredBetweenRange(@Body() getProductsByRangeDto: GetProductsByRangeDto) {
-    return this.productService.getFilteredBetweenRange(getProductsByRangeDto);
+  @Post('custom-filter')
+  getFilteredBetweenRange(@Body() productsCustomFilterDto: ProductsCustomFilterDto) {
+    return this.productService.customFilter(productsCustomFilterDto);
   }
 
-  @Get('filtered-by-stock-existence')
-  getFilteredByStockExistence(@Query('stock', ParseBoolPipe) stock: boolean) {
-    return this.productService.getFilteredByStockExistence(stock);
-  }
+  //
+  // @Get('filtered-by-stock-existence')
+  // getFilteredByStockExistence(@Query('stock', ParseBoolPipe) stock: boolean,
+  //                             @Query('take', ParseIntPipe) take: number) {
+  //   return this.productService.getFilteredByStockExistence(stock, take);
+  // }
+  //
+  // @Get('custom-date')
+  // getByCustomDate(@Query('date') date: Date,
+  //                 @Query('take', ParseIntPipe) take: number) {
+  //   return this.productService.getByCustomDate(date, take);
+  // }
 
   @Get('search-by-tag-name/:tagName')
   getProductsByTagName(@Param('tagName') tagName: string) {
