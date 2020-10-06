@@ -34,7 +34,11 @@ export class UserRepository extends Repository<User> {
     const { email, password } = emailLoginDto;
     const user = await this.findByEmail(email);
     if (!user) {
-      throw new NotFoundException('User does not exist in the database');
+      throw new NotFoundException('User is not exist in the system!');
+    }
+    const isUser = (): boolean => user.claims.some(role => role === UserRole.USER);
+    if (!isUser()) {
+      throw new ForbiddenException('<p><span>You are not a user, ask the other super admins to make you a user</span></p>');
     }
     if ((await user.validatePassword(password))) {
       return { email, user };

@@ -41,10 +41,6 @@ export class AuthService {
 
   }
 
-  async pagination() {
-    return this.userRepository.pagination();
-  }
-
   async signUpAdmin(authCredentialsDto: AuthCredentialsDto): Promise<{ admin: User, token: string }> {
     const admin = await this.setUserOrAdminBaseData(authCredentialsDto);
     admin.claims = [UserRole.WEAK_ADMIN];

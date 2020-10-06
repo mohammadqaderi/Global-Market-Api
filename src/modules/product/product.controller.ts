@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseBoolPipe,
   ParseIntPipe,
   Post,
   Put,
@@ -22,7 +21,6 @@ import { AdminAuthGuard } from '../../commons/guards/admin-auth.guard';
 import { Roles } from '../../commons/decorators/roles.decorator';
 import { UserRole } from '../../commons/enums/user-role.enum';
 import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
-import { GetProductsByRangeDto } from './dto/get-products-by-range.dto';
 import { ProductsCustomFilterDto } from './dto/products-custom-filter.dto';
 
 
@@ -67,19 +65,6 @@ export class ProductController {
   getFilteredBetweenRange(@Body() productsCustomFilterDto: ProductsCustomFilterDto) {
     return this.productService.customFilter(productsCustomFilterDto);
   }
-
-  //
-  // @Get('filtered-by-stock-existence')
-  // getFilteredByStockExistence(@Query('stock', ParseBoolPipe) stock: boolean,
-  //                             @Query('take', ParseIntPipe) take: number) {
-  //   return this.productService.getFilteredByStockExistence(stock, take);
-  // }
-  //
-  // @Get('custom-date')
-  // getByCustomDate(@Query('date') date: Date,
-  //                 @Query('take', ParseIntPipe) take: number) {
-  //   return this.productService.getByCustomDate(date, take);
-  // }
 
   @Get('search-by-tag-name/:tagName')
   getProductsByTagName(@Param('tagName') tagName: string) {

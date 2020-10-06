@@ -24,6 +24,19 @@ export class SubCategoryService {
     @Inject(forwardRef(() => TagService)) private tagService: TagService) {
   }
 
+  async fetchMixLatestProducts() {
+    const subCategories = await this.getAllSubCategories();
+    const date = new Date(Date.now());
+    const currentMonth = date.getMonth();
+    let mixFilteredProducts = [];
+    for (const subCategory of subCategories) {
+      const products: Product[] = subCategory.products
+        .filter(p => ((p.createdAt.getMonth() + 1) === (currentMonth + 1)) && (p.inStock === true));
+      mixFilteredProducts = mixFilteredProducts.concat(products.slice(0, 1));
+    }
+    return mixFilteredProducts;
+  }
+
   async getAllSubCategories() {
     return await this.subCategoryRepository.find();
   }
@@ -129,11 +142,11 @@ export class SubCategoryService {
 
   async removeTagsFromCategory(id: number, payload: any): Promise<SubCategory> {
     const subCategory = await this.getSubCategory(id);
-    for (let i = 0; i < payload.subCategoryTags.length; i++) {
-      const categoryTag = subCategory.subCategoryTags.find(ct => ct.id === payload.subCategoryTags[i]);
-      if (categoryTag) {
-        await this.subCategoryRepository.delete(categoryTag.id);
-        subCategory.subCategoryTags = subCategory.subCategoryTags.filter(sTag => sTag.id !== payload.subCategoryTags[i]);
+    for (let i = 0; i < payload.tags.length; i++) {
+      const subCategoryTag = subCategory.subCategoryTags.find(ct => ct.id === payload.tags[i]);
+      if (subCategoryTag) {
+        await this.subCategoryTagRepository.delete(subCategoryTag.id);
+        subCategory.subCategoryTags = subCategory.subCategoryTags.filter(sTag => sTag.id !== subCategoryTag.id);
       }
     }
     return await subCategory.save();

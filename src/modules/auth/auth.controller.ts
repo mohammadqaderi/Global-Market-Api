@@ -96,11 +96,6 @@ export class AuthController {
     return this.authService.getSystemUsers();
   }
 
-  @Get('pagination')
-  pagination() {
-    return this.authService.pagination();
-  }
-
   @Get('users/:id')
   @ApiParam({ name: 'id', type: String, required: true })
   getUserById(@Param('id', ParseIntPipe) id: number) {

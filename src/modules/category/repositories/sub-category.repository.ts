@@ -11,4 +11,7 @@ export class SubCategoryRepository extends Repository<SubCategory> {
       .leftJoinAndSelect('subCategory.products', 'product').getMany();
     return subCategories;
   }
+
+
+
 }

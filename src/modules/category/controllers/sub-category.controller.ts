@@ -30,6 +30,11 @@ export class SubCategoryController {
     return this.subCategoryService.getAllSubCategories();
   }
 
+  @Get('mix-latest-products')
+  getMixedLatestProducts() {
+    return this.subCategoryService.fetchMixLatestProducts();
+  }
+
   @Get('search-by-tag-name/:tagName')
   getSubCategoriesByTagName(@Param('tagName') tagName: string) {
     return this.subCategoryService.getSubCategoriesByTagName(tagName);

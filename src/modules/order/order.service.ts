@@ -118,6 +118,7 @@ export class OrderService {
   async createOrderItem(order: Order, cartProduct: CartProduct): Promise<OrderItem> {
     const product = await this.productService.getProductById(cartProduct.productId);
     product.sales += 1;
+    product.quantity = product.quantity - cartProduct.quantity;
     await product.save();
     const orderItem = new OrderItem();
     orderItem.order = order;

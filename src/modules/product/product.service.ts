@@ -14,7 +14,6 @@ import { CartService } from '../cart/cart.service';
 import { CartProduct } from '../cart/entities/cart-product.entity';
 import { CreateCartProductDto } from '../cart/dto/create-cart-product.dto';
 import { ManageProductImages } from '../../commons/interfaces/manage-product-images.interface';
-import { GetProductsByRangeDto } from './dto/get-products-by-range.dto';
 import { ProductsCustomFilterDto } from './dto/products-custom-filter.dto';
 
 
@@ -146,14 +145,12 @@ export class ProductService {
     const product = await this.getProductById(productId);
     const { quantity } = createCartProductDto;
     const cartProduct = new CartProduct();
-    cartProduct.productId = product.id;
+    cartProduct.productId = productId;
     cartProduct.image = product.images[0];
     cartProduct.quantity = quantity;
     cartProduct.totalPrice = product.currentPrice * quantity;
     cartProduct.name = product.name;
     cart.totalItems += 1;
-    product.quantity = product.quantity - quantity;
-    await product.save();
     cartProduct.cart = await cart.save();
     const savedCartProduct = await cartProduct.save();
     return savedCartProduct;
