@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from './entities/order.entity';
 import { Repository } from 'typeorm';
@@ -10,12 +10,16 @@ import { CartProduct } from '../cart/entities/cart-product.entity';
 import { ThrowErrors } from '../../commons/functions/throw-errors';
 import NotFound = ThrowErrors.NotFound;
 import { ProductService } from '../product/product.service';
+import { InvoiceService } from '../invoice/invoice.service';
+import { PaymentService } from '../payment/payment.service';
 
 
 @Injectable()
 export class OrderService {
   constructor(@InjectRepository(Order) private readonly orderRepository: Repository<Order>,
               @InjectRepository(OrderItem) private readonly orderItemRepository: Repository<OrderItem>,
+              @Inject(forwardRef(() => InvoiceService)) private invoiceService: InvoiceService,
+              private paymentService: PaymentService,
               private productService: ProductService) {
   }
 
@@ -78,13 +82,12 @@ export class OrderService {
     createOrderDto: OrderDto,
   ): Promise<Order> {
     const order = new Order();
-    const { comments, billingAddress } = createOrderDto;
-    order.comments = comments;
+    const { billingAddress } = createOrderDto;
     order.user = user;
     const today = new Date();
     order.orderItems = [];
     order.status = OrderStatus.PROCESSED;
-    order.address = billingAddress;
+    order.billingAddress = billingAddress;
     order.shipmentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
     const savedOrder = await order.save();
     return savedOrder;
@@ -92,6 +95,8 @@ export class OrderService {
 
   async deleteOrder(id: number): Promise<void> {
     const order = await this.getOrderById(id);
+    const invoice = await this.invoiceService.getInvoiceById(order.invoiceId);
+    await this.paymentService.paymentRepository.delete(invoice.payment);
     for (let i = 0; i < order.orderItems.length; i++) {
       await this.orderItemRepository.delete(order.orderItems[i].id);
     }
@@ -99,16 +104,14 @@ export class OrderService {
     if (result.affected === 0) {
       NotFound('Order', id);
     }
+    await this.invoiceService.invoiceRepository.delete(invoice.id);
   }
 
   async updateOrder(id: number, updateOrderDto: OrderDto): Promise<Order> {
     const order = await this.getOrderById(id);
-    const { comments, billingAddress } = updateOrderDto;
-    if (comments) {
-      order.comments = comments;
-    }
+    const { billingAddress } = updateOrderDto;
     if (billingAddress) {
-      order.address = billingAddress;
+      order.billingAddress = billingAddress;
     }
     order.updatedAt = new Date();
     const updatedOrder = await order.save();

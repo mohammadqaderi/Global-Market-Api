@@ -3,17 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class OrderDto {
   @ApiProperty({
-    type: String,
-    name: 'comments',
-    description: `
-        This is the comments of the order, written by the user
-    `,
-    required: true,
-    title: 'Comments',
-  })
-  comments: string;
-
-  @ApiProperty({
     type: Object,
     name: 'billingAddress',
     description: `

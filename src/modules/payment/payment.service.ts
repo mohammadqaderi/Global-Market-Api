@@ -12,7 +12,7 @@ import NotFound = ThrowErrors.NotFound;
 
 @Injectable()
 export class PaymentService {
-  constructor(@InjectRepository(Payment) private readonly paymentRepository: Repository<Payment>,
+  constructor(@InjectRepository(Payment) public readonly paymentRepository: Repository<Payment>,
               private invoiceService: InvoiceService) {
   }
 

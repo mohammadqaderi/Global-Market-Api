@@ -28,7 +28,9 @@ export class Payment extends BaseEntity {
   })
   user: User;
 
-  @OneToOne(type => Invoice, invoice => invoice.payment)
+  @OneToOne(type => Invoice, invoice => invoice.payment, {
+    eager: true,
+  })
   @JoinColumn()
   invoice: Invoice;
 

@@ -25,11 +25,8 @@ export class Order extends BaseEntity {
   })
   updatedAt: Date;
 
-  @Column()
-  comments: string;
-
   @Column('simple-json')
-  address: BillingAddress;
+  billingAddress: BillingAddress;
 
   @Column()
   shipmentDate: Date;

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { AuthConstants } from '../../commons/constants/auth-constants';
@@ -12,7 +12,7 @@ import { OrderModule } from '../order/order.module';
   imports: [TypeOrmModule.forFeature([Invoice]),
     PassportModule.register({
       defaultStrategy: AuthConstants.strategies,
-    }), OrderModule],
+    }), forwardRef(() => OrderModule)],
   providers: [InvoiceService],
   controllers: [InvoiceController],
   exports: [InvoiceService],

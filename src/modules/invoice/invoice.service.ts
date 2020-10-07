@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { User } from '../auth/entities/user.entity';
 import { Order } from '../order/entities/order.entity';
 import { Invoice } from './invoice.entity';
@@ -12,8 +12,8 @@ import { OrderService } from '../order/order.service';
 
 @Injectable()
 export class InvoiceService {
-  constructor(@InjectRepository(Invoice) private readonly invoiceRepository: Repository<Invoice>,
-              private orderService: OrderService) {
+  constructor(@InjectRepository(Invoice) public readonly invoiceRepository: Repository<Invoice>,
+              @Inject(forwardRef(() => OrderService)) private orderService: OrderService) {
   }
 
   async getAllInvoices(): Promise<Invoice[]> {
