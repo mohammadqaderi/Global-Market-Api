@@ -3,8 +3,8 @@ export class BillingAddress {
   country: string;
   city: string;
   address1: string;
-  address2: string;
-  postalCode: any;
+  address2?: string;
+  postalCode: number;
   phone: string;
   email: string;
   comments: string;

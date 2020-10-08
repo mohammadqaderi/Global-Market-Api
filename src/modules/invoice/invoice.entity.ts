@@ -1,4 +1,4 @@
-import { BaseEntity, Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, Generated, ManyToOne, OneToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { User } from '../auth/entities/user.entity';
 import { Order } from '../order/entities/order.entity';
 import { Payment } from '../payment/payment.entity';
@@ -9,14 +9,9 @@ export class Invoice extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column({
-  //   generated: 'increment',
-  //   default: 10001010,
-  //   unique: true,
-  //   update: true,
-  // })
-  // number: string;
-  @Column()
+  @Column({
+    nullable: true,
+  })
   number: string;
 
   @Column()

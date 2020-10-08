@@ -53,12 +53,10 @@ export class InvoiceService {
     invoice.order = order;
     let totalAmount = 0;
     const orderItems = await this.orderService.getOrderItems(order.id);
-    console.log(orderItems);
     for (let i = 0; i < orderItems.length; i++) {
       totalAmount += orderItems[i].unitPrice;
     }
     invoice.total = totalAmount;
-    invoice.number = uuidv4();
     const newInvoice = await invoice.save();
     return newInvoice;
   }

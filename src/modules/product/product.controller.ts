@@ -34,6 +34,9 @@ export class ProductController {
     return this.productService.getAllProducts();
   }
 
+
+
+
   @Get('shop')
   getShopProducts(@Query('take', ParseIntPipe) take: number) {
     return this.productService.getShopProducts(take);

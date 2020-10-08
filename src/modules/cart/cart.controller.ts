@@ -34,8 +34,8 @@ export class CartController {
 
   @Post('checkout-on-cart')
   checkoutOnCart(@GetAuthenticatedUser() user: User,
-                 @Body() createOrderDto: OrderDto,
-                 @Body() createPaymentDto: CreatePaymentDto) {
+                 @Body('createOrderDto') createOrderDto: OrderDto,
+                 @Body('createPaymentDto') createPaymentDto: CreatePaymentDto) {
     return this.cartService.checkoutOnCart(user, createOrderDto, createPaymentDto);
   }
 

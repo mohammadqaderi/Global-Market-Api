@@ -23,6 +23,11 @@ export class PaymentController {
     return this.paymentService.getAllPayments();
   }
 
+  @Get('stripe')
+  stripe() {
+    return this.paymentService.playWithStripe();
+  }
+
 
   @Get('user')
   @UseGuards(AuthGuard(), UserAuthGuard)

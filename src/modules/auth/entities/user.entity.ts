@@ -89,4 +89,10 @@ export class User extends BaseEntity {
   })
   subscriberId: number;
 
+
+  @Column({
+    nullable: true,
+  })
+  stripeId: string;
+
 }
