@@ -6,12 +6,9 @@ import { webPushInit } from './commons/functions/initalize-web-push';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
-    AppModule, {
-      cors: true,
-    },
+    AppModule
   );
   webPushInit();
-  app.enableCors();
   SwaggerOptionsInit(app);
 
   const port: number = parseInt(`${process.env.PORT}`) || 3000;
