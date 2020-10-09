@@ -38,6 +38,13 @@ export class OrderController {
     return this.orderService.getOrderById(id);
   }
 
+  @Get(':id/details')
+  @UseGuards(AuthGuard(), AcceptedAuthGuard)
+  @Roles(UserRole.USER)
+  getOrderDetails(@Param('id', ParseIntPipe) id: number) {
+    return this.orderService.getOrderDetails(id);
+  }
+
   @Put(':id/update')
   @UseGuards(AuthGuard(), UserAuthGuard)
   @Roles(UserRole.USER)

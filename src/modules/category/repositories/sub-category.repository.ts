@@ -12,6 +12,4 @@ export class SubCategoryRepository extends Repository<SubCategory> {
     return subCategories;
   }
 
-
-
 }

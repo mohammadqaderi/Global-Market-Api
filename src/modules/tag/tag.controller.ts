@@ -5,16 +5,29 @@ import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../../commons/decorators/roles.decorator';
 import { AdminAuthGuard } from '../../commons/guards/admin-auth.guard';
 import { UserRole } from '../../commons/enums/user-role.enum';
+import { ProductService } from '../product/product.service';
+import { SubCategoryService } from '../category/services/sub-category.service';
 
 
 @Controller('tags')
 export class TagController {
-  constructor(private tagService: TagService) {
+  constructor(private tagService: TagService, private productService: ProductService,
+              private subCategoryService: SubCategoryService) {
   }
 
   @Get()
   getAllTags() {
     return this.tagService.getAllTags();
+  }
+
+  @Get('sub-categories')
+  getSubCategoriesTags() {
+    return this.subCategoryService.getSubCategoryTags();
+  }
+
+  @Get('products')
+  getProductsTags() {
+    return this.productService.getProductsTags();
   }
 
   @Post('new')

@@ -11,6 +11,11 @@ export namespace Config {
     synchronize: true,
   };
 
+  export const StripeConfig = {
+    secretKey: 'sk_test_BjlpCdO71CsbsSf7JfgLsBCb00M2avjKhI',
+    apiVersion: '2020-08-27'
+  }
+
   export const AwsConfig = {
     AWS_S3_BUCKET_NAME: 'global-market-store',
     ACCESS_KEY_ID: 'AKIAJM6T2LPVYFHHY3VQ',

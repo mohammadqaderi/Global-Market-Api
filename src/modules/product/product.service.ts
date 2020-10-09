@@ -16,11 +16,10 @@ import { CreateCartProductDto } from '../cart/dto/create-cart-product.dto';
 import { ManageProductImages } from '../../commons/interfaces/manage-product-images.interface';
 import { ProductsCustomFilterDto } from './dto/products-custom-filter.dto';
 
-
 @Injectable()
 export class ProductService {
 
-  constructor(private readonly productRepository: ProductRepository,
+  constructor(public readonly productRepository: ProductRepository,
               @InjectRepository(ProductTag) public readonly productTagRepository: Repository<ProductTag>,
               private awsService: AwsService,
               @Inject(forwardRef(() => CartService)) private cartService: CartService,
@@ -41,6 +40,18 @@ export class ProductService {
 
   async customFilter(productsCustomFilterDto: ProductsCustomFilterDto) {
     return await this.productRepository.customFilter(productsCustomFilterDto);
+  }
+
+  async getProductsTags() {
+    const productTags = await this.productTagRepository.find();
+    let uniqueArray: ProductTag[] = [];
+    for (let i = 0; i < productTags.length; i++) {
+      const item = uniqueArray.find(item => item.name === productTags[i].name);
+      if (!item) {
+        uniqueArray = [...uniqueArray, productTags[i]];
+      }
+    }
+    return uniqueArray;
   }
 
   // async getByCustomDate(date: Date, take: number) {

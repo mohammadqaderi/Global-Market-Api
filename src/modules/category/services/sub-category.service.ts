@@ -41,6 +41,18 @@ export class SubCategoryService {
     return await this.subCategoryRepository.find();
   }
 
+  async getSubCategoryTags() {
+    const subCategoriesTags = await this.subCategoryTagRepository.find();
+    let uniqueArray: SubCategoryTag[] = [];
+    for (let i = 0; i < subCategoriesTags.length; i++) {
+      const item = uniqueArray.find(item => item.name === subCategoriesTags[i].name);
+      if (!item) {
+        uniqueArray = [...uniqueArray, subCategoriesTags[i]];
+      }
+    }
+    return uniqueArray
+  }
+
   async getTotalSubCategories() {
     return await this.subCategoryRepository.createQueryBuilder().getCount();
   }

@@ -16,6 +16,7 @@ import { GlobalDataModule } from '../../shared/global-data/global-data.module';
 import { NotificationModule } from '../../modules/notification/notification.module';
 import { ActivityModule } from '../../gateways/activity/activity.module';
 import { StripeModule } from 'nestjs-stripe';
+import StripeConfig = Config.StripeConfig;
 
 export const MainModules = [
   TypeOrmModule.forRoot(Config.DbConfig as TypeOrmModuleOptions),
@@ -35,7 +36,7 @@ export const MainModules = [
       },
     } as NodemailerOptions<NodemailerDrivers.SMTP>),
   StripeModule.forRoot({
-    apiKey: 'sk_test_BjlpCdO71CsbsSf7JfgLsBCb00M2avjKhI',
+    apiKey: StripeConfig.secretKey,
     apiVersion: '2020-08-27',
   }),
   AuthModule,

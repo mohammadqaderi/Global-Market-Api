@@ -11,12 +11,19 @@ import { Stripe } from 'stripe';
 import { InjectStripe } from 'nestjs-stripe';
 import { PaymentMethod } from '../../commons/enums/payment-method.enum';
 import NotFound = ThrowErrors.NotFound;
+import { Config } from '../../config';
+import StripeConfig = Config.StripeConfig;
 
 @Injectable()
 export class PaymentService {
+  stripe: Stripe;
+
   constructor(@InjectRepository(Payment) public readonly paymentRepository: Repository<Payment>,
               private invoiceService: InvoiceService,
               @InjectStripe() private readonly stripeClient: Stripe) {
+    this.stripe = new Stripe(StripeConfig.secretKey, {
+      apiVersion: '2020-08-27',
+    });
   }
 
   async playWithStripe() {
@@ -24,22 +31,35 @@ export class PaymentService {
   }
 
   async generatePaymentInvoice(user: User, stripeData) {
-    const { amount, source, description } = stripeData;
-    let customer = null;
+    let customer: Stripe.Customer = null;
     if (user.stripeId) {
-      customer = await this.stripeClient.customers.retrieve(user.stripeId);
+      customer = await this.stripe.customers.retrieve(user.stripeId) as Stripe.Customer;
+      await this.createInvoice(customer, stripeData);
     } else {
-      console.log(user.profile);
-      customer = await this.stripeClient.customers.create({ email: user.email });
+      const params: Stripe.CustomerCreateParams = {
+        description: 'test customer',
+        email: user.email,
+      };
+      customer = await this.stripe.customers.create(params);
+      user.stripeId = customer.id;
+      await this.createInvoice(customer, stripeData);
     }
-    const payment = await this.stripeClient.charges.create({
-      amount,
-      currency: 'usd',
-      description,
-      source,
+    return customer.id;
+  }
+
+  async createInvoice(customer: Stripe.Customer, stripeData) {
+    const { amount, description } = stripeData;
+    const invoiceItem = await this.stripe.invoiceItems.create({
       customer: customer.id,
+      amount,
+      description,
+      currency: 'usd',
     });
-    console.log(payment);
+    await this.stripe.invoices.create({
+      collection_method: 'send_invoice',
+      days_until_due: 100,
+      customer: invoiceItem.customer as string,
+    });
   }
 
   async getAllPayments(): Promise<Payment[]> {
@@ -70,6 +90,17 @@ export class PaymentService {
     return payment;
   }
 
+  async setUserStripeId(user: User, data: { customerId: string }) {
+    if (!user.stripeId) {
+      const { customerId } = data;
+      user.stripeId = customerId;
+      const savedUser = await user.save();
+      return savedUser;
+    } else {
+      return user;
+    }
+  }
+
   async createPayment(user: User, createPaymentDto: CreatePaymentDto, order: Order) {
     const payment = new Payment();
     const { paymentMethod, stripeData } = createPaymentDto;
@@ -79,7 +110,7 @@ export class PaymentService {
     payment.amount = invoice.total;
     payment.invoice = invoice;
     const newPayment = await payment.save();
-    await this.generatePaymentInvoice(user, stripeData);
-    return { payment: newPayment, invoice: invoice };
+    const customerId = await this.generatePaymentInvoice(user, stripeData);
+    return { payment: newPayment, invoice: invoice, customerId };
   };
 }

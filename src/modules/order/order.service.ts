@@ -77,17 +77,45 @@ export class OrderService {
     return order;
   }
 
+  async getOrderDetails(id: number) {
+    const order = await this.getOrderById(id);
+    let orderItemsProducts = [];
+    for (let i = 0; i < order.orderItems.length; i++) {
+      const product = await this.productService.productRepository.findOne({
+        id: order.orderItems[i].productId,
+      });
+      if (product) {
+        orderItemsProducts = [...orderItemsProducts, product];
+      }
+    }
+    return {
+      order,
+      orderItemsProducts,
+    };
+  }
+
   async createOrder(
     user: User,
     createOrderDto: OrderDto,
   ): Promise<Order> {
     const order = new Order();
     const { billingAddress } = createOrderDto;
+    const { comments, postalCode, phone, email, country, city, address1, address2, fullName } = billingAddress;
     order.user = user;
     const today = new Date();
     order.orderItems = [];
     order.status = OrderStatus.PROCESSED;
-    order.billingAddress = billingAddress;
+    order.billingAddress = {
+      city,
+      fullName,
+      address2,
+      address1,
+      country,
+      email,
+      phone,
+      postalCode,
+      comments,
+    };
     order.shipmentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
     const savedOrder = await order.save();
     return savedOrder;

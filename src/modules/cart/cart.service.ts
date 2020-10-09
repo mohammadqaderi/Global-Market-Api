@@ -47,7 +47,8 @@ export class CartService {
       order: Order,
       invoice: Invoice,
       payment: Payment,
-      cart: Cart
+      cart: Cart,
+      customerId: string
     }> {
     const cart = await this.getUserCart(user);
     const cartProduct = cart.cartProducts.find(cProd => cProd.id === cartProductId);
@@ -69,16 +70,18 @@ export class CartService {
       invoice: data.invoice,
       payment: data.payment,
       cart: data.cart,
+      customerId: data.customerId,
     };
 
   }
 
   async completeCreatingInvoiceAndPayment(user: User, createPaymentDto: CreatePaymentDto, order: Order, cart?: Cart) {
-    const { payment, invoice } = await this.paymentService.createPayment(user, createPaymentDto, order);
+    const { payment, invoice, customerId } = await this.paymentService.createPayment(user, createPaymentDto, order);
     return {
       order,
       payment,
       invoice,
+      customerId,
       cart,
     };
   }

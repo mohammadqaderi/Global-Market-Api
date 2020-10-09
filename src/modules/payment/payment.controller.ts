@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
 import { Roles } from '../../commons/decorators/roles.decorator';
@@ -28,6 +28,12 @@ export class PaymentController {
     return this.paymentService.playWithStripe();
   }
 
+  @Post('customer/set-token')
+  @UseGuards(AuthGuard(), UserAuthGuard)
+  @Roles(UserRole.USER)
+  setCustomerTokenId(@GetAuthenticatedUser() user: User, @Body() data: any) {
+    return this.paymentService.setUserStripeId(user, data);
+  }
 
   @Get('user')
   @UseGuards(AuthGuard(), UserAuthGuard)

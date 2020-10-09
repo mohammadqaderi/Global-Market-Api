@@ -316,6 +316,7 @@ export class AuthService {
 
   }
 
+
   async isValidUsername(username: string): Promise<boolean> {
     const query = this.userRepository.createQueryBuilder('user').select('username');
     query.where('user.username LIKE :username', { username });
