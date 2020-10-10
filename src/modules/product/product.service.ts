@@ -38,6 +38,16 @@ export class ProductService {
     return await this.productRepository.getTotalProducts();
   }
 
+  async searchByName(name: string, take: number) {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+    const products
+      = await queryBuilder.select()
+      .where('product.name ILIKE :name', { name: `%${name}%` })
+      .take(take)
+      .getMany();
+    return products;
+  }
+
   async customFilter(productsCustomFilterDto: ProductsCustomFilterDto) {
     return await this.productRepository.customFilter(productsCustomFilterDto);
   }

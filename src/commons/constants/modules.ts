@@ -17,6 +17,7 @@ import { NotificationModule } from '../../modules/notification/notification.modu
 import { ActivityModule } from '../../gateways/activity/activity.module';
 import { StripeModule } from 'nestjs-stripe';
 import StripeConfig = Config.StripeConfig;
+import { SearchModule } from '../../shared/search/search.module';
 
 export const MainModules = [
   TypeOrmModule.forRoot(Config.DbConfig as TypeOrmModuleOptions),
@@ -53,4 +54,5 @@ export const MainModules = [
   GlobalDataModule,
   NotificationModule,
   ActivityModule,
+  SearchModule,
 ];

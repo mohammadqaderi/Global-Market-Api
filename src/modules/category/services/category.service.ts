@@ -20,6 +20,16 @@ export class CategoryService {
     return await this.categoryRepository.find();
   }
 
+  async searchByName(name: string, take: number) {
+    const queryBuilder = this.categoryRepository.createQueryBuilder('category');
+    const categories = await queryBuilder.leftJoinAndSelect('category.subCategories', 'subCategory')
+      .leftJoinAndSelect('subCategory.products', 'product')
+      .where('category.name ILIKE :name', { name: `%${name}%` })
+      .take(take)
+      .getMany();
+    return categories;
+  }
+
   async getTotalCategories() {
     return await this.categoryRepository.createQueryBuilder().getCount();
   }

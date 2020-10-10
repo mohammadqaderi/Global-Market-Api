@@ -41,6 +41,16 @@ export class SubCategoryService {
     return await this.subCategoryRepository.find();
   }
 
+  async searchByName(name: string, take: number) {
+    const queryBuilder = this.subCategoryRepository.createQueryBuilder('subCategory');
+    const subCategories
+      = await queryBuilder.leftJoinAndSelect('subCategory.products', 'product')
+      .where('subCategory.name ILIKE :name', { name: `%${name}%` })
+      .take(take)
+      .getMany();
+    return subCategories;
+  }
+
   async getSubCategoryTags() {
     const subCategoriesTags = await this.subCategoryTagRepository.find();
     let uniqueArray: SubCategoryTag[] = [];
@@ -50,7 +60,7 @@ export class SubCategoryService {
         uniqueArray = [...uniqueArray, subCategoriesTags[i]];
       }
     }
-    return uniqueArray
+    return uniqueArray;
   }
 
   async getTotalSubCategories() {
