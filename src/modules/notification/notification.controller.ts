@@ -27,6 +27,12 @@ export class NotificationController {
   }
 
 
+  @Post('subscribers/new')
+  newSubscriber(@Body('subscriptionDto') subscriptionDto: any) {
+    return this.notificationService.newSubscriber(subscriptionDto);
+  }
+
+
   // @Get('subscribers/subscriber-notifications')
   // @UseGuards(AuthGuard(), UserAuthGuard)
   // @Roles(UserRole.USER)
@@ -43,12 +49,6 @@ export class NotificationController {
   @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   getSubscriberById(@Param('id', ParseIntPipe) id: number) {
     return this.notificationService.getSubscriberById(id);
-  }
-
-
-  @Post('subscribers/new')
-  newSubscriber(@Body('subscriptionDto') subscriptionDto: any) {
-    return this.notificationService.newSubscriber(subscriptionDto);
   }
 
   @Post('send-notification')

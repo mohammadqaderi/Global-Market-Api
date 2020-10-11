@@ -46,9 +46,6 @@ export class NotificationService {
         email,
       },
     });
-    if (!subscriber) {
-      throw new NotFoundException(`Subscriber with email ${email} does not found`);
-    }
     return subscriber;
   }
 
