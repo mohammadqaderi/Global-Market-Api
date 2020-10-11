@@ -47,8 +47,8 @@ export class NotificationController {
 
 
   @Post('subscribers/new')
-  newSubscriber(@Query('email') email: string, @Body() subscriber: any) {
-    return this.notificationService.newSubscriber(email, subscriber);
+  newSubscriber(@Body('subscriptionDto') subscriptionDto: any) {
+    return this.notificationService.newSubscriber(subscriptionDto);
   }
 
   @Post('send-notification')

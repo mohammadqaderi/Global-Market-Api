@@ -83,10 +83,11 @@ export class NotificationService {
     }
   }
 
-  async newSubscriber(email: string, sub: any): Promise<Subscriber> {
+  async newSubscriber(subscriptionDto: any): Promise<Subscriber> {
+    const { sub, email } = subscriptionDto;
     const checkIfExist = await this.getSubscriberByEmail(email);
     if (checkIfExist) {
-        throw new ConflictException("You already have subscribed to our news letter, you can use another email for subscription")
+      throw new ConflictException('You already have subscribed to our news letter, you can use another email for subscription');
     }
     const { endpoint, expirationTime, keys } = sub;
     const subscriber = new Subscriber();
