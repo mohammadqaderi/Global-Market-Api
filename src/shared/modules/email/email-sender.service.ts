@@ -5,6 +5,7 @@ import AwsConfig = Config.AwsConfig;
 import { Nodemailer, NodemailerDrivers } from '@crowdlinker/nestjs-mailer';
 import { MailingData } from '../../../commons/interfaces/mailing-data.interface';
 import * as nodeMailer from 'nodemailer';
+import { ContactMessageDto } from '../../dto/contact-message.dto';
 
 AWS.config.update({
   accessKeyId: AwsConfig.ACCESS_KEY_ID,
@@ -14,13 +15,10 @@ AWS.config.update({
 
 @Injectable()
 export class EmailSenderService {
+  transporter;
 
   constructor(private nodeMailerService: Nodemailer<NodemailerDrivers.SMTP>) {
-  }
-
-  async sendEmailMessage(data: MailingData) {
-    const { from, text, html, subject, to } = data;
-    const transporter = nodeMailer.createTransport({
+    this.transporter = nodeMailer.createTransport({
       service: 'gmail',
       auth: {
         user: 'mqaderi44@gmail.com',
@@ -30,8 +28,12 @@ export class EmailSenderService {
         rejectUnauthorized: false,
       },
       port: 465,
-      secure: true
+      secure: true,
     });
+  }
+
+  async sendEmailMessage(data: MailingData) {
+    const { from, text, html, subject, to } = data;
     const mailOptions = {
       from: 'mqaderi44@gmail.com',
       to,
@@ -40,18 +42,18 @@ export class EmailSenderService {
       html,
     };
 
-    return transporter.sendMail(mailOptions);
-    // await this.nodeMailerService.sendMail({
-    //   from,
-    //   to,
-    //   subject,
-    //   text,
-    //   html,
-    // }).then(info => {
-    //   console.log('Message sent: %s', info.messageId);
-    // }).catch(err => {
-    //   console.log('Message sent: %s', err);
-    // });
+    return this.transporter.sendMail(mailOptions);
+  }
+
+  async sendContactMessage(payload: ContactMessageDto) {
+    const { email, message, subject } = payload;
+    const mailOptions = {
+      from: email,
+      to: 'mqaderi44@gmail.com',
+      subject,
+      text: message,
+    };
+    return this.transporter.sendMail(mailOptions);
   }
 
   // sendEmail(from: string, to: string, subject: string, message: string) {

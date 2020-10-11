@@ -155,7 +155,7 @@ export class AuthService {
     const verifiedEmail = await this.emailVerificationRepo.findOne({ email });
     if (verifiedEmail && verifiedEmail.emailToken) {
       const url = `<a style='text-decoration:none;'
-    href= http://${FrontEndKeys.url}:${FrontEndKeys.port}/${FrontEndKeys.endpoints[1]}/${verifiedEmail.emailToken}>Click Here to confirm your email</a>`;
+    href= http://${FrontEndKeys.url}/${FrontEndKeys.endpoints[1]}/${verifiedEmail.emailToken}>Click Here to confirm your email</a>`;
       await this.emailSenderService.sendEmailMessage({
         from: '"Company" <' + NodeMailerOptions.transport.auth.username + '>',
         to: email,
@@ -203,7 +203,7 @@ export class AuthService {
     const tokenModel = await this.createForgottenPasswordToken(email);
     if (tokenModel && tokenModel.newPasswordToken) {
       const url = `<a style='text-decoration:none;'
-    href= http://${FrontEndKeys.url}:${FrontEndKeys.port}/${FrontEndKeys.endpoints[0]}/${tokenModel.newPasswordToken}>Click here to reset your password</a>`;
+    href= http://${FrontEndKeys.url}/${FrontEndKeys.endpoints[0]}/${tokenModel.newPasswordToken}>Click here to reset your password</a>`;
       await this.emailSenderService.sendEmailMessage({
         from: '"Company" <' + NodeMailerOptions.transport.auth.username + '>',
         to: email,
@@ -219,7 +219,7 @@ export class AuthService {
   async createForgottenPasswordToken(email: string) {
     let forgottenPassword = await this.forgottenPasswordRepo.findOne({ email });
     if (forgottenPassword && ((new Date().getTime() - forgottenPassword.timestamp.getTime()) / 60000) < 15) {
-      throw new ConflictException('RESET_PASSWORD_EMAIL_SENT_RECENTLY');
+      throw new ConflictException('Reset password request has been sent recently!, check your email inbox to submit the request');
     } else {
       forgottenPassword = new ForgottenPassword();
       forgottenPassword.email = email;
@@ -242,6 +242,9 @@ export class AuthService {
     const { newPasswordToken, newPassword } = resetPasswordDto;
     if (newPasswordToken) {
       const forgottenPassword = await this.forgottenPasswordRepo.findOne({ newPasswordToken });
+      if (!forgottenPassword) {
+        return new ConflictException('You did not send a forgot password request , try to send a new request');
+      }
       isNewPasswordChanged = await this.setPassword(forgottenPassword.email, newPassword);
       if (isNewPasswordChanged) {
         await this.forgottenPasswordRepo.delete(forgottenPassword.id);

@@ -8,7 +8,9 @@ import { UserRole } from '../../../commons/enums/user-role.enum';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   async findByEmail(email: string): Promise<User> {
-    return await this.findOne({ email });
+    const query = this.createQueryBuilder('user');
+    const user = await query.select().where('user.email = :email', { email }).getOne();
+    return user;
   }
 
   async findByUsername(username: string): Promise<User> {

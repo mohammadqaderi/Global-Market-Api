@@ -1,10 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import * as webPush from 'web-push';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Subscriber } from './entities/subscriber.entity';
 import { Repository } from 'typeorm';
 import { SubscribersNotifications } from './entities/subscribers-notifications.entity';
-import { User } from '../auth/entities/user.entity';
 import { NotificationPayloadDto } from './notification-payload.dto';
 import { NotificationPayload } from './classes/notification-payload';
 import { Notification } from './classes/notification';
@@ -41,30 +40,60 @@ export class NotificationService {
     return subscriber;
   }
 
+  async getSubscriberByEmail(email: string): Promise<Subscriber> {
+    const subscriber = await this.subscriberRepository.findOne({
+      where: {
+        email,
+      },
+    });
+    if (!subscriber) {
+      throw new NotFoundException(`Subscriber with email ${email} does not found`);
+    }
+    return subscriber;
+  }
+
   async getSubscriberNotifications(id: number): Promise<SubscribersNotifications[]> {
     const subscriber = await this.getSubscriberById(id);
     return subscriber.subscribersNotifications;
   }
 
-  async deleteSubscriber(id: number): Promise<void> {
-    const subscriber = await this.getSubscriberById(id);
+  async removeSubscription(email: string) {
+    const subscriber = await this.getSubscriberByEmail(email);
+    await this.deleteSubscriberData(subscriber);
+    const result = await this.subscriberRepository.delete(email);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Subscriber with email ${email} does not found`);
+    }
+  }
+
+  async deleteSubscriberData(subscriber: Subscriber) {
     for (let i = 0; i < subscriber.subscribersNotifications.length; i++) {
       await this.subscribersNotificationsRepository
         .delete(subscriber.subscribersNotifications[i].id);
     }
+
+  }
+
+  async deleteSubscriber(id: number): Promise<void> {
+    const subscriber = await this.getSubscriberById(id);
+    await this.deleteSubscriberData(subscriber);
     const result = await this.subscriberRepository.delete(id);
     if (result.affected === 0) {
       throw new NotFoundException(`Subscriber with Id ${id} does not found`);
     }
   }
 
-  async newSubscriber(user: User, sub: any): Promise<Subscriber> {
+  async newSubscriber(email: string, sub: any): Promise<Subscriber> {
+    const checkIfExist = await this.getSubscriberByEmail(email);
+    if (checkIfExist) {
+        throw new ConflictException("You already have subscribed to our news letter, you can use another email for subscription")
+    }
     const { endpoint, expirationTime, keys } = sub;
     const subscriber = new Subscriber();
-    subscriber.user = user;
     subscriber.keys = keys;
     subscriber.endpoint = endpoint;
     subscriber.expirationTime = expirationTime;
+    subscriber.email = email;
     subscriber.subscribersNotifications = [];
     return await subscriber.save();
   }

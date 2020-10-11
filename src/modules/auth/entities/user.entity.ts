@@ -6,7 +6,6 @@ import { Invoice } from '../../invoice/invoice.entity';
 import { Payment } from '../../payment/payment.entity';
 import { Order } from '../../order/entities/order.entity';
 import { UserRole } from '../../../commons/enums/user-role.enum';
-import { Subscriber } from '../../notification/entities/subscriber.entity';
 
 @Entity('users')
 @Unique(['username', 'email'])
@@ -78,16 +77,6 @@ export class User extends BaseEntity {
     nullable: true,
   })
   cartId: number;
-
-
-  @OneToOne(type => Subscriber, subscriber => subscriber.user)
-  @JoinColumn()
-  subscriber: Subscriber;
-
-  @Column({
-    nullable: true,
-  })
-  subscriberId: number;
 
 
   @Column({

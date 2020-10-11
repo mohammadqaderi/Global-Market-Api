@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseArrayPipe, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseArrayPipe, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
 import { GetAuthenticatedUser } from '../../commons/decorators/get-authenticated-user.decorator';
@@ -26,6 +26,7 @@ export class CartController {
   getTotalCarts() {
     return this.cartService.getTotalCarts();
   }
+
 
   @Get('user-cart')
   getUserCart(@GetAuthenticatedUser() user: User) {
@@ -56,5 +57,18 @@ export class CartController {
   removeProductsFromCart(@GetAuthenticatedUser() user: User,
                          @Body('cartProducts', ParseArrayPipe) cartProducts: RemoveCartItem[]) {
     return this.cartService.removeProductsFromCart(user.cartId, cartProducts, true);
+  }
+
+  @Delete(':cartId/remove-product-from-cart/:cartProductId')
+  removeCartProductFromCart(@Param('cartId', ParseIntPipe) cartId: number,
+                            @Param('cartProductId', ParseIntPipe) cartProductId: number) {
+    return this.cartService.removeCartProduct(cartId, cartProductId);
+  }
+
+  @Put(':cartId/update-product-cart-quantity/:cartProductId')
+  updateCartProductQuantity(@Param('cartId', ParseIntPipe) cartId: number,
+                            @Param('cartProductId', ParseIntPipe) cartProductId: number,
+                            @Query('newQuantity', ParseIntPipe) newQuantity: number) {
+    return this.cartService.updateCartProductQuantity(cartId, cartProductId, newQuantity);
   }
 }

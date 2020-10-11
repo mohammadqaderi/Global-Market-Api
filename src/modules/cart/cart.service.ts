@@ -39,6 +39,32 @@ export class CartService {
     return await this.cartRepository.createQueryBuilder().getCount();
   }
 
+  async updateCartProductQuantity(cartId: number, cartProductId: number, newQuantity: number) {
+    const cart = await this.getUserCart(null, cartId);
+    for (let i = 0; i < cart.cartProducts.length; i++) {
+      if (cart.cartProducts[i].id === cartProductId) {
+        cart.cartProducts[i].quantity = newQuantity;
+        const product = await this.productService.getProductById(cart.cartProducts[i].productId);
+        cart.cartProducts[i].totalPrice = 0;
+        cart.cartProducts[i].totalPrice = product.currentPrice * newQuantity;
+        await cart.cartProducts[i].save();
+      }
+    }
+    return await cart.save();
+  }
+
+  async removeCartProduct(cartId: number, cartProductId: number) {
+    const cart = await this.getUserCart(null, cartId);
+    for (let i = 0; i < cart.cartProducts.length; i++) {
+      if (cart.cartProducts[i].id === cartProductId) {
+        cart.cartProducts = cart.cartProducts.filter(cp => cp.id !== cartProductId);
+        cart.totalItems = cart.totalItems - 1;
+        await this.cartProductRepository.delete(cartProductId);
+      }
+    }
+    return await cart.save();
+  }
+
   async checkoutOnSingleProduct(user: User,
                                 cartProductId: number,
                                 createOrderDto: OrderDto,

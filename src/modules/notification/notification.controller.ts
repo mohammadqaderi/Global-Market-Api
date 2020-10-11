@@ -2,11 +2,8 @@ import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@ne
 import { AuthGuard } from '@nestjs/passport';
 import { AdminAuthGuard } from '../../commons/guards/admin-auth.guard';
 import { Roles } from '../../commons/decorators/roles.decorator';
-import { GetAuthenticatedUser } from '../../commons/decorators/get-authenticated-user.decorator';
-import { User } from '../auth/entities/user.entity';
 import { NotificationPayloadDto } from './notification-payload.dto';
 import { NotificationService } from './notification.service';
-import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
 import { UserRole } from '../../commons/enums/user-role.enum';
 
 @Controller('notifications')
@@ -30,16 +27,16 @@ export class NotificationController {
   }
 
 
-  @Get('subscribers/subscriber-notifications')
-  @UseGuards(AuthGuard(), UserAuthGuard)
-  @Roles(UserRole.USER)
-  getSubscriberNotifications(@GetAuthenticatedUser() user: User) {
-    if (user.subscriberId) {
-      return this.notificationService.getSubscriberNotifications(user.subscriberId);
-    } else {
-      return null;
-    }
-  }
+  // @Get('subscribers/subscriber-notifications')
+  // @UseGuards(AuthGuard(), UserAuthGuard)
+  // @Roles(UserRole.USER)
+  // getSubscriberNotifications(@GetAuthenticatedUser() user: User) {
+  //   if (user.subscriberId) {
+  //     return this.notificationService.getSubscriberNotifications(user.subscriberId);
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   @Get('subscribers/:id')
   @UseGuards(AuthGuard(), AdminAuthGuard)
@@ -49,11 +46,9 @@ export class NotificationController {
   }
 
 
-  @Post('subscribers/new')
-  @UseGuards(AuthGuard(), UserAuthGuard)
-  @Roles(UserRole.USER)
-  newSubscriber(@GetAuthenticatedUser() user: User, @Body() subscriber: any) {
-    return this.notificationService.newSubscriber(user, subscriber);
+  @Post('subscribers/new/:email')
+  newSubscriber(@Param('email') email: string, @Body() subscriber: any) {
+    return this.notificationService.newSubscriber(email, subscriber);
   }
 
   @Post('send-notification')

@@ -42,8 +42,7 @@ export namespace Config {
     privateKey: 'Psk8q_qyekL2hrPwnYF8k-ckTmb8JRmjBUBsmv9FquY',
   };
   export const FrontEndKeys = {
-    url: 'localhost',
-    port: 4200,
+    url: 'https://global-market-demo.herokuapp.com',
     endpoints: ['auth/reset-password', 'auth/verify-email'],
   };
 }
