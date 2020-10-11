@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AdminAuthGuard } from '../../commons/guards/admin-auth.guard';
 import { Roles } from '../../commons/decorators/roles.decorator';
@@ -46,8 +46,8 @@ export class NotificationController {
   }
 
 
-  @Post('subscribers/new/:email')
-  newSubscriber(@Param('email') email: string, @Body() subscriber: any) {
+  @Post('subscribers/new')
+  newSubscriber(@Query('email') email: string, @Body() subscriber: any) {
     return this.notificationService.newSubscriber(email, subscriber);
   }
 
