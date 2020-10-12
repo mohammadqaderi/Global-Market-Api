@@ -8,6 +8,7 @@ import { TagModule } from '../../modules/tag/tag.module';
 import { PaymentModule } from '../../modules/payment/payment.module';
 import { OrderModule } from '../../modules/order/order.module';
 import { InvoiceModule } from '../../modules/invoice/invoice.module';
+import { NotificationModule } from '../../modules/notification/notification.module';
 
 interface DocumentData {
   title: string;
@@ -18,7 +19,15 @@ interface DocumentData {
 export function SwaggerOptionsInit(app: any) {
   const options1 = buildDocument({
     title: 'Auth Module',
-    description: 'Auth Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/profiles">Profile</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'entities,users, auth, strategies, jwt',
   });
 
@@ -29,7 +38,15 @@ export function SwaggerOptionsInit(app: any) {
 
   const options2 = buildDocument({
     title: 'Profile Module',
-    description: 'These keywords and tags are within the domain of Profile Module',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'profiles',
   });
 
@@ -40,7 +57,15 @@ export function SwaggerOptionsInit(app: any) {
 
   const options3 = buildDocument({
     title: 'Cart Module',
-    description: 'Cart Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'cart',
   });
   generateDoc(app, options3, CartModule, 'api/cart');
@@ -49,7 +74,15 @@ export function SwaggerOptionsInit(app: any) {
 
   const options4 = buildDocument({
     title: 'Category Module',
-    description: 'Category Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'category, sub-category, category-tag',
   });
   generateDoc(app, options4, CategoryModule, 'api/categories');
@@ -58,7 +91,15 @@ export function SwaggerOptionsInit(app: any) {
 
   const options5 = buildDocument({
     title: 'Product Module',
-    description: 'Product Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'product, product-tags',
   });
   generateDoc(app, options5, ProductModule, 'api/products');
@@ -68,7 +109,15 @@ export function SwaggerOptionsInit(app: any) {
 
   const options6 = buildDocument({
     title: 'Tag Module',
-    description: 'Tag Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'tags',
   });
   generateDoc(app, options6, TagModule, 'api/tags');
@@ -78,7 +127,15 @@ export function SwaggerOptionsInit(app: any) {
 
   const options7 = buildDocument({
     title: 'Payment Module',
-    description: 'Payment Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'payments',
   });
   generateDoc(app, options7, PaymentModule, 'api/payments');
@@ -87,7 +144,15 @@ export function SwaggerOptionsInit(app: any) {
 
   const options8 = buildDocument({
     title: 'Order Module',
-    description: 'Order Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/invoices">Invoices</a></p>',
     tags: 'orders, order-item',
   });
   generateDoc(app, options8, OrderModule, 'api/orders');
@@ -96,10 +161,34 @@ export function SwaggerOptionsInit(app: any) {
 
   const options9 = buildDocument({
     title: 'Invoice Module',
-    description: 'Invoice Module description',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>',
     tags: 'invoices',
   });
   generateDoc(app, options9, InvoiceModule, 'api/invoices');
+  // End of Options9
+
+  const options10 = buildDocument({
+    title: 'Notifications Module',
+    description: '<h3>Endpoints in this system</h3>' +
+      '<p><a style="text-decoration: none;" href="http://localhost:3000/api/auth">Auth</a></p>' +
+      ' <p><a style="text-decoration: none;"  href="http://localhost:3000/api/profile">Profile</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/categories">Categories</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/products">Products</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/tags">Tags</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/payments">Payments</a></p>'
+      + '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/orders">Orders</a></p>' +
+      '<p><a style="text-decoration: none;"  href="http://localhost:3000/api/cart">Cart</a></p>',
+    tags: 'invoices',
+  });
+  generateDoc(app, options10, NotificationModule, 'api/notifications');
   // End of Options9
 
 }

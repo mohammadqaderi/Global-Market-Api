@@ -33,7 +33,7 @@ export class EmailSenderService {
   }
 
   async sendEmailMessage(data: MailingData) {
-    const { from, text, html, subject, to } = data;
+    const {text, html, subject, to } = data;
     const mailOptions = {
       from: 'mqaderi44@gmail.com',
       to,

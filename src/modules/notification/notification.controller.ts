@@ -5,7 +5,16 @@ import { Roles } from '../../commons/decorators/roles.decorator';
 import { NotificationPayloadDto } from './notification-payload.dto';
 import { NotificationService } from './notification.service';
 import { UserRole } from '../../commons/enums/user-role.enum';
+import { ApiBody, ApiHeader, ApiParam, ApiTags } from '@nestjs/swagger';
+import { AuthCredentialsDto } from '../auth/dto/auth-credentials.dto';
+import { NotificationEntity } from './entities/notification.entity';
 
+
+@ApiTags('notifications, subscribers')
+@ApiHeader({
+  name: 'Authorization',
+  description: 'Authorization Token',
+})
 @Controller('notifications')
 export class NotificationController {
 
@@ -28,25 +37,16 @@ export class NotificationController {
 
 
   @Post('subscribers/new')
+  @ApiBody({ type: Object, required: true, description: 'browser subscription' })
   newSubscriber(@Body('subscriptionDto') subscriptionDto: any) {
     return this.notificationService.newSubscriber(subscriptionDto);
   }
 
 
-  // @Get('subscribers/subscriber-notifications')
-  // @UseGuards(AuthGuard(), UserAuthGuard)
-  // @Roles(UserRole.USER)
-  // getSubscriberNotifications(@GetAuthenticatedUser() user: User) {
-  //   if (user.subscriberId) {
-  //     return this.notificationService.getSubscriberNotifications(user.subscriberId);
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
   @Get('subscribers/:id')
   @UseGuards(AuthGuard(), AdminAuthGuard)
   @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
+  @ApiParam({ name: 'id', type: Number, required: true, example: '1' })
   getSubscriberById(@Param('id', ParseIntPipe) id: number) {
     return this.notificationService.getSubscriberById(id);
   }
@@ -54,6 +54,7 @@ export class NotificationController {
   @Post('send-notification')
   @UseGuards(AuthGuard(), AdminAuthGuard)
   @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
+  @ApiBody({ type: NotificationPayloadDto, required: true, description: 'title and content' })
   sendNotification(@Body() notificationPayloadDto: NotificationPayloadDto) {
     return this.notificationService.sendNewNotification(notificationPayloadDto);
   }

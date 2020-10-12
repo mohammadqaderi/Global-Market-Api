@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
 import { EmailLoginDto } from './dto/email-login.dto';
@@ -9,12 +9,15 @@ import { GetAuthenticatedUser } from '../../commons/decorators/get-authenticated
 import { User } from './entities/user.entity';
 import { AdminAuthGuard } from '../../commons/guards/admin-auth.guard';
 import { UserAuthGuard } from '../../commons/guards/user-auth.guard';
-import { ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
-import { AcceptedAuthGuard } from '../../commons/guards/accepted-auth.guard';
+import { ApiBody, ApiHeader, ApiParam, ApiTags } from '@nestjs/swagger';
 import { EditRolesDto } from './dto/edit-roles.dto';
 import { UserRole } from '../../commons/enums/user-role.enum';
 
 @ApiTags('auth')
+@ApiHeader({
+  name: 'Authorization',
+  description: 'Authorization Token',
+})
 @Controller('auth')
 export class AuthController {
 
