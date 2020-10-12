@@ -7,17 +7,18 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthConstants } from '../../commons/constants/auth-constants';
 import { NotificationController } from './notification.controller';
 import { NotificationService } from './notification.service';
+import { EmailModule } from '../../shared/modules/email/email.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([NotificationEntity, Subscriber, SubscribersNotifications]),
     PassportModule.register({
       defaultStrategy: AuthConstants.strategies,
-    }),
+    }), EmailModule,
   ],
   providers: [NotificationService],
   controllers: [NotificationController],
-  exports: [NotificationService]
+  exports: [NotificationService],
 })
 export class NotificationModule {
 }

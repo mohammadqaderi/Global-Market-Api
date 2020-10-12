@@ -3,7 +3,7 @@ import { Config } from '../../config';
 import VapidKeys = Config.VapidKeys;
 export function webPushInit() {
   webPush.setVapidDetails(
-    'mailto:example@yourdomain.org',
+    'mailto:https://gobal-market-demo.herokuapp.com',
     VapidKeys.publicKey,
     VapidKeys.privateKey,
   );

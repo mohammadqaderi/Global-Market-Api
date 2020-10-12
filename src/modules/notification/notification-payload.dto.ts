@@ -1,4 +1,5 @@
 export class NotificationPayloadDto {
   title: string;
-  body: string;
+  htmlBody: string;
+  plainText: string;
 }

@@ -10,12 +10,16 @@ import { Notification } from './classes/notification';
 import { NotificationData } from './classes/notification-data';
 import { NotificationEntity } from './entities/notification.entity';
 import { v4 as uuidv4 } from 'uuid';
+import { Config } from '../../config';
+import VapidKeys = Config.VapidKeys;
+import { EmailSenderService } from '../../shared/modules/email/email-sender.service';
 
 @Injectable()
 export class NotificationService {
   constructor(@InjectRepository(Subscriber) private subscriberRepository: Repository<Subscriber>,
               @InjectRepository(SubscribersNotifications)
               private subscribersNotificationsRepository: Repository<SubscribersNotifications>,
+              private emailSenderService: EmailSenderService,
               @InjectRepository(NotificationEntity) private notificationRepository: Repository<NotificationEntity>) {
   }
 
@@ -98,11 +102,11 @@ export class NotificationService {
 
 
   async sendNewNotification(notificationPayloadDto: NotificationPayloadDto): Promise<NotificationEntity> {
-    const { title, body } = notificationPayloadDto;
+    const { title, htmlBody, plainText } = notificationPayloadDto;
     const notificationPayload = new NotificationPayload();
     notificationPayload.notification = new Notification();
     notificationPayload.notification.title = title;
-    notificationPayload.notification.body = body;
+    notificationPayload.notification.body = plainText;
     notificationPayload.notification.actions = [
       {
         action: 'explore',
@@ -113,15 +117,23 @@ export class NotificationService {
     notificationPayload.notification.data.dateOfArrival = new Date(Date.now());
     notificationPayload.notification.data.primaryKey = uuidv4();
     notificationPayload.notification.icon =
-      'https://songs-static.s3.us-east-2.amazonaws.com/main-page-logo-small-hat.png';
+      'https://songs-static.s3.us-east-2.amazonaws.com/global-market-logo.jpg';
     notificationPayload.notification.vibrate = [100, 50, 100];
     const subscribers = await this.getAllSubscribers();
-    const notification = await this.createNotification(title, body);
+    const notification = await this.createNotification(title, plainText);
+    const options = {
+      vapidDetails: {
+        subject: 'https://gobal-market-demo.herokuapp.com',
+        publicKey: VapidKeys.publicKey,
+        privateKey: VapidKeys.privateKey,
+      },
+    };
     for (let i = 0; i < subscribers.length; i++) {
       await this.createSubscriberNotification(
         notificationPayload, notification, subscribers[i],
       );
-      await webPush.sendNotification(subscribers[i], JSON.stringify(notificationPayload));
+      await webPush.sendNotification(subscribers[i], JSON.stringify(notificationPayload), options);
+      await this.emailSenderService.sendEmailMessage({ subject: title, html: htmlBody, text: plainText, to: subscribers[i].email, from: null });
     }
     return notification;
 
