@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Header, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
 import { EmailLoginDto } from './dto/email-login.dto';
@@ -56,6 +56,11 @@ export class AuthController {
   @ApiBody({ type: EmailLoginDto, required: true })
   signInUser(@Body() emailLoginDto: EmailLoginDto) {
     return this.authService.signInUser(emailLoginDto);
+  }
+
+  @Put('update-token/:email')
+  updateToken(@Param('email') email: string) {
+    return this.authService.generateJwtToken(email);
   }
 
 

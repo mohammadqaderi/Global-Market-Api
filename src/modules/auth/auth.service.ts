@@ -130,7 +130,7 @@ export class AuthService {
 
 
   // this method well be used in different methods
-  generateJwtToken(email: string) {
+  generateJwtToken(email: string): string {
     const payload: JwtPayload = { email };
     const jwt = this.jwtService.sign(payload);
     return jwt;
