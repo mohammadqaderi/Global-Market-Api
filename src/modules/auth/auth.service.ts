@@ -155,7 +155,7 @@ export class AuthService {
     const verifiedEmail = await this.emailVerificationRepo.findOne({ email });
     if (verifiedEmail && verifiedEmail.emailToken) {
       const url = `<a style='text-decoration:none;'
-    href= http://${FrontEndKeys.url}/${FrontEndKeys.endpoints[1]}/${verifiedEmail.emailToken}>Click Here to confirm your email</a>`;
+    href= ${FrontEndKeys.url}/${FrontEndKeys.endpoints[1]}/${verifiedEmail.emailToken}>Click Here to confirm your email</a>`;
       await this.emailSenderService.sendEmailMessage({
         from: '"Company" <' + NodeMailerOptions.transport.auth.username + '>',
         to: email,
