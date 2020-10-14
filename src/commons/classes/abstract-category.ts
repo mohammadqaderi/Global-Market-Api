@@ -12,7 +12,7 @@ export class AbstractCategory extends BaseEntity {
   description: string;
 
   @Column({
-    default: new Date(),
+    default: new Date(Date.now()),
   })
   createdAt: Date;
   @Column({

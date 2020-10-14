@@ -11,7 +11,7 @@ export class Tag extends BaseEntity {
   name: string;
 
   @Column({
-    default: new Date(),
+    default: new Date(Date.now()),
   })
   createdAt: Date;
 

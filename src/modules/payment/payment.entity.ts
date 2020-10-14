@@ -10,7 +10,7 @@ export class Payment extends BaseEntity {
   id: number;
 
   @Column({
-    default: new Date(),
+    default: new Date(Date.now()),
   })
   date: Date;
 

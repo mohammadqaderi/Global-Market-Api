@@ -102,7 +102,7 @@ export class OrderService {
     const { billingAddress } = createOrderDto;
     const { comments, postalCode, phone, email, country, city, address1, address2, fullName } = billingAddress;
     order.user = user;
-    const today = new Date();
+    const today = new Date(Date.now());
     order.orderItems = [];
     order.status = OrderStatus.PROCESSED;
     order.billingAddress = {
@@ -141,7 +141,7 @@ export class OrderService {
     if (billingAddress) {
       order.billingAddress = billingAddress;
     }
-    order.updatedAt = new Date();
+    order.updatedAt = new Date(Date.now());
     const updatedOrder = await order.save();
     return updatedOrder;
   }

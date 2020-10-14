@@ -46,7 +46,7 @@ export class TagService {
     const tag = await this.getTagById(id);
     const { name } = updateTagDto;
     tag.name = name;
-    tag.updatedAt = new Date();
+    tag.updatedAt = new Date(Date.now());
     return await tag.save();
   }
 

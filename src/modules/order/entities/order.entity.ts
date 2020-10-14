@@ -17,7 +17,7 @@ export class Order extends BaseEntity {
   })
   status: OrderStatus;
 
-  @Column({ default: new Date() })
+  @Column({ default: new Date(Date.now()) })
   createdAt: Date;
 
   @Column({

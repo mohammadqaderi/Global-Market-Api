@@ -203,7 +203,7 @@ export class AuthService {
     const tokenModel = await this.createForgottenPasswordToken(email);
     if (tokenModel && tokenModel.newPasswordToken) {
       const url = `<a style='text-decoration:none;'
-    href= http://${FrontEndKeys.url}/${FrontEndKeys.endpoints[0]}/${tokenModel.newPasswordToken}>Click here to reset your password</a>`;
+    href= ${FrontEndKeys.url}/${FrontEndKeys.endpoints[0]}/${tokenModel.newPasswordToken}>Click here to reset your password</a>`;
       await this.emailSenderService.sendEmailMessage({
         from: '"Company" <' + NodeMailerOptions.transport.auth.username + '>',
         to: email,

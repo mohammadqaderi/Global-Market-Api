@@ -18,7 +18,7 @@ export class Invoice extends BaseEntity {
   total: number;
 
   @Column({
-    default: new Date(),
+    default: new Date(Date.now()),
   })
   date: Date;
 

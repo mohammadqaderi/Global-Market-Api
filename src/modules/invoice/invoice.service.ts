@@ -47,7 +47,7 @@ export class InvoiceService {
   async createInvoice(user: User, order: Order): Promise<Invoice> {
     const invoice = new Invoice();
     invoice.user = user;
-    const today = new Date();
+    const today = new Date(Date.now());
     invoice.dueDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7);
     invoice.paymentDate = today;
     invoice.order = order;

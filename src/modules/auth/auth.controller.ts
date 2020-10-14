@@ -98,8 +98,6 @@ export class AuthController {
   }
 
   @Get('system-users')
-  @UseGuards(AuthGuard(), AdminAuthGuard)
-  @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
   getSystemUsers() {
     return this.authService.getSystemUsers();
   }

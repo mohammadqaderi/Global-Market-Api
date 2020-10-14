@@ -39,6 +39,7 @@
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.1",
+    "cors": "^2.8.5",
     "csurf": "^1.11.0",
     "email-check": "^1.1.0",
     "email-existence": "^0.1.6",

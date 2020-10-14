@@ -132,7 +132,7 @@ export class ProductService {
     if (product.references) {
       product.references = references;
     }
-    product.updatedAt = new Date();
+    product.updatedAt = new Date(Date.now());
     const updatedProduct = await product.save();
     return updatedProduct;
   }

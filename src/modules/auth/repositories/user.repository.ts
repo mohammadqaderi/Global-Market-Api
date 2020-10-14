@@ -8,24 +8,29 @@ import { UserRole } from '../../../commons/enums/user-role.enum';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   async findByEmail(email: string): Promise<User> {
-    const query = this.createQueryBuilder('user');
+    const query = this.createQuery();
     const user = await query.select().where('user.email = :email', { email }).getOne();
     return user;
+  }
+
+  createQuery() {
+    return this.createQueryBuilder('user');
   }
 
   async findByUsername(username: string): Promise<User> {
     return await this.findOne({ username });
   }
 
+
   async getSystemUsers() {
-    const query = this.createQueryBuilder('user');
+    const query = this.createQuery();
     const users = await query.select(['user.id', 'user.email', 'user.username', 'user.claims', 'user.emailVerified']).getMany();
     return users;
   }
 
   async pagination() {
     const users = await this
-      .createQueryBuilder('user')
+      .createQuery()
       .leftJoinAndSelect('user.payments', 'payment')
       .take(10)
       .getMany();
