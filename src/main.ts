@@ -11,7 +11,7 @@ async function bootstrap() {
   webPushInit();
   SwaggerOptionsInit(app);
   app.use(function(req, res, next) { //allow cross origin requests
-    res.header('Access-Control-Allow-Origin', ['https://global-market-demo.herokuapp.com', 'https://global-market-cms-demo.herokuapp.com']);
+    res.header('Access-Control-Allow-Origin', "*");
     res.setHeader('Access-Control-Allow-Methods', 'POST, PUT, OPTIONS, DELETE, GET');
     next();
   });
@@ -21,7 +21,7 @@ async function bootstrap() {
       'Access-Control-Allow-Header',
       'Origin, X-Requested-With, Content-Type, Accept',
     );
-    res.header('Access-Control-Allow-Origin', ['https://global-market-demo.herokuapp.com', 'https://global-market-cms-demo.herokuapp.com']);
+    res.header('Access-Control-Allow-Origin', "*");
     next();
   });
   const port: number = parseInt(`${process.env.PORT}`) || 3000;
