@@ -60,7 +60,8 @@ export class AuthController {
 
   @Put('update-token/:email')
   updateToken(@Param('email') email: string) {
-    return this.authService.generateJwtToken(email);
+    const jwt = this.authService.generateJwtToken(email);
+    return { jwt };
   }
 
 
