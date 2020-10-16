@@ -29,6 +29,14 @@ export class CategoryService {
       .getMany();
     return categories;
   }
+  async getMatchingByNames(name: string) {
+    const queryBuilder = this.categoryRepository.createQueryBuilder('category');
+    const searchResults
+      = await queryBuilder.select('category.name')
+      .where('category.name ILIKE :name', { name: `%${name}%` })
+      .getMany();
+    return searchResults;
+  }
 
   async getTotalCategories() {
     return await this.categoryRepository.createQueryBuilder().getCount();

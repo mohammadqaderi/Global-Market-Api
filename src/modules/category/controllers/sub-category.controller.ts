@@ -40,6 +40,11 @@ export class SubCategoryController {
     return this.subCategoryService.getSubCategoriesByTagName(tagName);
   }
 
+  @Get('match-by-name/:name')
+  searchMatchByName(@Param('name') name: string) {
+    return this.subCategoryService.getMatchingByNames(name);
+  }
+
   @Get(':id')
   getSubCategory(@Param('id', ParseIntPipe) id: number) {
     return this.subCategoryService.getSubCategory(id);

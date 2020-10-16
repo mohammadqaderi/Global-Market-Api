@@ -73,6 +73,10 @@ export class ProductController {
   getProductsByTagName(@Param('tagName') tagName: string) {
     return this.productService.searchForProductsByTagName(tagName);
   }
+  @Get('match-by-name/:name')
+  searchMatchByName(@Param('name') name: string) {
+    return this.productService.getMatchingByNames(name);
+  }
 
   @Get(':id')
   getProductById(@Param('id', ParseIntPipe) id: number) {

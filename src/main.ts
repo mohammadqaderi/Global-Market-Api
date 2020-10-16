@@ -35,7 +35,7 @@ async function bootstrap() {
     res.header('Access-Control-Allow-Origin', '*');
     next();
   });
-  const port: number = parseInt(`${process.env.PORT}`) || 3000;
+  const port: number = parseInt(`${process.env.PORT}`) || 4000;
 
   await app.listen(port);
 }

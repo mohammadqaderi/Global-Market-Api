@@ -51,6 +51,15 @@ export class SubCategoryService {
     return subCategories;
   }
 
+  async getMatchingByNames(name: string) {
+    const queryBuilder = this.subCategoryRepository.createQueryBuilder('subCategory');
+    const searchResults
+      = await queryBuilder.select('subCategory.name')
+      .where('subCategory.name ILIKE :name', { name: `%${name}%` })
+      .getMany();
+    return searchResults;
+  }
+
   async getSubCategoryTags() {
     const subCategoriesTags = await this.subCategoryTagRepository.find();
     let uniqueArray: SubCategoryTag[] = [];

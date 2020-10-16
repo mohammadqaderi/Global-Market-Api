@@ -136,6 +136,14 @@ export class ProductService {
     const updatedProduct = await product.save();
     return updatedProduct;
   }
+  async getMatchingByNames(name: string) {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+    const searchResults
+      = await queryBuilder.select('product.name')
+      .where('product.name ILIKE :name', { name: `%${name}%` })
+      .getMany();
+    return searchResults;
+  }
 
   async manageProductImages(id: number, data: ManageProductImages,
                             type: string,

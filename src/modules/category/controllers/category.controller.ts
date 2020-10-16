@@ -30,6 +30,11 @@ export class CategoryController {
     return this.categoryService.getCategoryById(id);
   }
 
+  @Get('match-by-name/:name')
+  searchMatchByName(@Param('name') name: string) {
+    return this.categoryService.getMatchingByNames(name);
+  }
+
   @Post(':id/new-sub-category')
   @UseGuards(AuthGuard(), AdminAuthGuard)
   @Roles(UserRole.SUPER_ADMIN, UserRole.WEAK_ADMIN)
