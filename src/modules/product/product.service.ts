@@ -191,8 +191,8 @@ export class ProductService {
       cartProduct.name = product.name;
       cart.totalItems += 1;
       cartProduct.cart = await cart.save();
-      const savedCartProduct = await cartProduct.save();
-      return savedCartProduct;
+      await cartProduct.save();
+      return await this.cartService.getCart(cart.id);
     }
   }
 

@@ -19,7 +19,7 @@ import { Payment } from '../payment/payment.entity';
 
 @Injectable()
 export class CartService {
-  constructor(@InjectRepository(Cart) private readonly cartRepository: Repository<Cart>,
+  constructor(@InjectRepository(Cart) public readonly cartRepository: Repository<Cart>,
               @InjectRepository(CartProduct) private readonly cartProductRepository: Repository<CartProduct>,
               private orderService: OrderService,
               private paymentService: PaymentService,
@@ -33,6 +33,13 @@ export class CartService {
     cart.totalItems = 0;
     const savedCart = await cart.save();
     return savedCart;
+  }
+
+  async getCart(id: number) {
+    const queryBuilder = this.cartRepository.createQueryBuilder('cart');
+    const cart = await queryBuilder.leftJoinAndSelect('cart.cartProducts', 'cartProduct')
+      .getOne();
+    return cart;
   }
 
   async getTotalCarts() {
