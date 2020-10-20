@@ -136,6 +136,7 @@ export class ProductService {
     const updatedProduct = await product.save();
     return updatedProduct;
   }
+
   async getMatchingByNames(name: string) {
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     const searchResults
@@ -173,16 +174,26 @@ export class ProductService {
     const cart = await this.cartService.getUserCart(null, cartId);
     const product = await this.getProductById(productId);
     const { quantity } = createCartProductDto;
-    const cartProduct = new CartProduct();
-    cartProduct.productId = productId;
-    cartProduct.image = product.images[0];
-    cartProduct.quantity = quantity;
-    cartProduct.totalPrice = product.currentPrice * quantity;
-    cartProduct.name = product.name;
-    cart.totalItems += 1;
-    cartProduct.cart = await cart.save();
-    const savedCartProduct = await cartProduct.save();
-    return savedCartProduct;
+    const cartProductIndex = cart.cartProducts.findIndex(cp => cp.productId === product.id);
+    if (cartProductIndex >= 0) {
+      let currentCartProduct = cart.cartProducts[cartProductIndex];
+      currentCartProduct.quantity = currentCartProduct.quantity + quantity;
+      currentCartProduct.totalPrice = product.currentPrice * currentCartProduct.quantity;
+      const savedCartProduct = await currentCartProduct.save();
+      cart.cartProducts[cartProductIndex] = savedCartProduct;
+      return await cart.save();
+    } else {
+      const cartProduct = new CartProduct();
+      cartProduct.productId = productId;
+      cartProduct.image = product.images[0];
+      cartProduct.quantity = quantity;
+      cartProduct.totalPrice = product.currentPrice * quantity;
+      cartProduct.name = product.name;
+      cart.totalItems += 1;
+      cartProduct.cart = await cart.save();
+      const savedCartProduct = await cartProduct.save();
+      return savedCartProduct;
+    }
   }
 
   async addTagsToProduct(productId: number, payload: InsertTagDto): Promise<ProductTag[]> {
