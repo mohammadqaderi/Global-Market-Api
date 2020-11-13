@@ -68,8 +68,8 @@ export class ProductService {
   //   return await this.productRepository.getByCustomDate(date, take);
   // }
 
-  async getCurrentMonthProducts() {
-    return await this.productRepository.getCurrentMonthProducts();
+  async getMixLatestProduct() {
+    return await this.productRepository.getMixLatestProduct();
   }
 
   async getLatestProducts() {
@@ -112,26 +112,17 @@ export class ProductService {
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const product = await this.getProductById(id);
     const { name, references, currentPrice, quantity, description } = updateProductDto;
-    if (product.name) {
-      product.name = name;
-    }
-    if (product.description) {
-      product.description = description;
-    }
-
-    if (product.quantity) {
-      product.quantity = quantity;
-    }
+    product.name = name;
+    product.description = description;
+    product.quantity = quantity;
     if (product.quantity === 0) {
       product.inStock = false;
     }
-    if (product.currentPrice) {
-      product.currentPrice = currentPrice;
+    if (currentPrice) {
       product.previousPrice = product.currentPrice;
+      product.currentPrice = currentPrice;
     }
-    if (product.references) {
-      product.references = references;
-    }
+    product.references = references;
     product.updatedAt = new Date(Date.now());
     const updatedProduct = await product.save();
     return updatedProduct;
@@ -188,6 +179,7 @@ export class ProductService {
       cartProduct.image = product.images[0];
       cartProduct.quantity = quantity;
       cartProduct.totalPrice = product.currentPrice * quantity;
+      cartProduct.maxPush = product.quantity;
       cartProduct.name = product.name;
       cart.totalItems += 1;
       cartProduct.cart = await cart.save();

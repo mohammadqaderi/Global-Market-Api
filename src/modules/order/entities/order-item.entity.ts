@@ -19,6 +19,7 @@ export class OrderItem extends BaseEntity {
   })
   order: Order;
 
+
   @Column()
   orderId: number;
 

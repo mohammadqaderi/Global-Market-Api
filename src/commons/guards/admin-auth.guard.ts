@@ -18,7 +18,7 @@ export class AdminAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const admin: User = req.user;
     if (admin) {
-      const hasRole = () => admin.claims.some(role => role === UserRole.SUPER_ADMIN || UserRole.WEAK_ADMIN);
+      const hasRole = () => admin.claims.some(role => role === UserRole.SUPER_ADMIN || role === UserRole.WEAK_ADMIN);
       return hasRole();
     } else {
       return false;

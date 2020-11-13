@@ -48,15 +48,15 @@ export class ProfileController {
     return this.profileService.changeProfileImage(user, folderName, subFolder, image);
   }
 
-  @Put('user-profile/edit-profile')
-  editProfile(@GetAuthenticatedUser() user: User,
-              @Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.editProfile(user, createProfileDto);
-  }
 
   @Delete('user-profile/delete-profile-image')
   deleteProfileImage(@GetAuthenticatedUser() user: User) {
     return this.profileService.deleteProfileImage(user);
   }
 
+  @Put('user-profile/edit-profile')
+  editProfile(@GetAuthenticatedUser() user: User,
+              @Body() createProfileDto: CreateProfileDto) {
+    return this.profileService.editProfile(user, createProfileDto);
+  }
 }

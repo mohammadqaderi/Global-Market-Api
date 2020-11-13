@@ -53,9 +53,9 @@ export class ProductController {
     return this.productService.getTotalSales();
   }
 
-  @Get('current-month')
-  async getCurrentMonthProducts() {
-    return await this.productService.getCurrentMonthProducts();
+  @Get('mix-latest-products')
+  async getMixLatestProduct() {
+    return await this.productService.getMixLatestProduct();
   }
 
 

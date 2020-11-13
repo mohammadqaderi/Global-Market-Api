@@ -17,7 +17,7 @@ export class AcceptedAuthGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const user: User = req.user;
     if (user) {
-      const hasRole = () => user.claims.some(role => role === UserRole.SUPER_ADMIN || UserRole.WEAK_ADMIN || role === UserRole.USER);
+      const hasRole = () => user.claims.some(role => role === UserRole.SUPER_ADMIN || role === UserRole.WEAK_ADMIN || role === UserRole.USER);
       return hasRole();
     } else {
       return false;

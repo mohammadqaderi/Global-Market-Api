@@ -19,11 +19,12 @@ export class ProductRepository extends Repository<Product> {
     return products;
   }
 
-  async getCurrentMonthProducts() {
+  async getMixLatestProduct() {
     const queryBuilder = this.getQueryBuilder();
-    const currentMonth = new Date().getMonth();
     const products = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag').take(16).getMany();
-    const filteredProducts = [].concat(products.filter(p => (p.createdAt.getMonth() + 1) === currentMonth));
+    const filteredProducts = [].concat(products.sort((a, b) => {
+        return <any>new Date(b.createdAt) - <any>new Date(a.createdAt);
+      }));
     return filteredProducts;
   }
 
