@@ -38,7 +38,7 @@ export class CartService {
   async getCart(id: number) {
     const queryBuilder = this.cartRepository.createQueryBuilder('cart');
     const cart = await queryBuilder.leftJoinAndSelect('cart.cartProducts', 'cartProduct')
-      .getOne();
+      .where({ id }).getOne();
     return cart;
   }
 
@@ -149,20 +149,14 @@ export class CartService {
 
   async getUserCart(user?: User, id?: number): Promise<Cart> {
     let cart = null;
+    const query = this.cartRepository.createQueryBuilder('cart');
     if (user) {
-      cart = await this.cartRepository.findOne({
-        where: {
-          id: user.cartId,
-        },
-      });
+      cart = await query.leftJoinAndSelect('cart.cartProducts', 'cartProduct')
+        .where('cart.id = :id', { id: user.cartId }).getOne();
     } else if (id) {
-      cart = await this.cartRepository.findOne({
-        where: {
-          id,
-        },
-      });
-    }
-    if (!cart) {
+      cart = await query.leftJoinAndSelect('cart.cartProducts', 'cartProduct')
+        .where('cart.id = :id', { id: id }).getOne();
+    } else {
       NotFound('Cart', user.cartId || id);
     }
     return cart;
@@ -181,7 +175,7 @@ export class CartService {
   async clearCartContent(cart: Cart, updateProductQuantity: boolean) {
     for (let i = 0; i < cart.cartProducts.length; i++) {
       if (updateProductQuantity) {
-        this.refreshProductQuantity(cart.cartProducts[i]);
+        await this.refreshProductQuantity(cart.cartProducts[i]);
       }
       await this.cartProductRepository.delete(cart.cartProducts[i].id);
     }
@@ -202,7 +196,7 @@ export class CartService {
       const cartProduct = cart.cartProducts.find(prod => prod.id === cartProducts[i].cartProductId);
       if (cartProduct) {
         if (updateProductQuantity) {
-          this.refreshProductQuantity(cartProduct);
+          await this.refreshProductQuantity(cartProduct);
         }
         await this.cartProductRepository.delete(cartProducts[i].cartProductId);
         cart.totalItems -= 1;

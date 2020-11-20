@@ -7,12 +7,12 @@ import { Repository } from 'typeorm';
 import { InvoiceService } from '../invoice/invoice.service';
 import { Order } from '../order/entities/order.entity';
 import { ThrowErrors } from '../../commons/functions/throw-errors';
-import { Stripe } from 'stripe';
 import { InjectStripe } from 'nestjs-stripe';
 import { PaymentMethod } from '../../commons/enums/payment-method.enum';
 import NotFound = ThrowErrors.NotFound;
 import { Config } from '../../config';
 import StripeConfig = Config.StripeConfig;
+import { Stripe } from 'stripe';
 
 @Injectable()
 export class PaymentService {

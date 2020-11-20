@@ -172,6 +172,7 @@ export class ProductService {
       currentCartProduct.totalPrice = product.currentPrice * currentCartProduct.quantity;
       const savedCartProduct = await currentCartProduct.save();
       cart.cartProducts[cartProductIndex] = savedCartProduct;
+      await cart.save();
       return await cart.save();
     } else {
       const cartProduct = new CartProduct();
@@ -184,7 +185,8 @@ export class ProductService {
       cart.totalItems += 1;
       cartProduct.cart = await cart.save();
       await cartProduct.save();
-      return await this.cartService.getCart(cart.id);
+      return await this.cartService.getUserCart(null, cart.id);
+
     }
   }
 
