@@ -2,7 +2,6 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { User } from '../auth/entities/user.entity';
 import { Order } from '../order/entities/order.entity';
 import { Invoice } from './invoice.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ThrowErrors } from '../../commons/functions/throw-errors';

@@ -1,5 +1,6 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { SearchService } from './search.service';
+import { ISearch } from '../../commons/interfaces/search.interface';
 
 @Controller('search')
 export class SearchController {
@@ -8,9 +9,9 @@ export class SearchController {
 
   }
 
-  @Get(':name/:type')
-  search(@Param('name') name: string, @Param('type') type: string,
-         @Query('take', ParseIntPipe) take: number) {
-    return this.searchService.search(name, type, take);
+  @Post()
+  search(@Body() searchPayload: ISearch) {
+    const { name, limit, page, take, type } = searchPayload;
+    return this.searchService.search(name, type, take, page, limit);
   }
 }

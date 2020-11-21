@@ -28,14 +28,6 @@ export class UserRepository extends Repository<User> {
     return users;
   }
 
-  async pagination() {
-    const users = await this
-      .createQuery()
-      .leftJoinAndSelect('user.payments', 'payment')
-      .take(10)
-      .getMany();
-    return users;
-  }
 
   async validateUserPassword(emailLoginDto: EmailLoginDto): Promise<{ email: string, user: User }> {
     const { email, password } = emailLoginDto;

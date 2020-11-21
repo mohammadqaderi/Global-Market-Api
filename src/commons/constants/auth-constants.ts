@@ -3,3 +3,4 @@ export const AuthConstants = {
   strategies: 'jwt',
   expiresIn: '10hr',
 };
+

@@ -1,6 +1,6 @@
 import {
   BadRequestException,
-  ConflictException, HttpStatus,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -229,13 +229,6 @@ export class AuthService {
     }
   }
 
-  async checkPassword(email: string, password: string) {
-    const user = await this.userRepository.findOne({ email });
-    if (!user) {
-      throw new NotFoundException('User Does not Found');
-    }
-    return bcrypt.compare(password, user.password);
-  }
 
   async setNewPassword(resetPasswordDto: ResetPasswordDto) {
     let isNewPasswordChanged = false;

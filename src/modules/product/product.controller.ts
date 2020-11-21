@@ -35,13 +35,16 @@ export class ProductController {
   }
 
 
-
-
   @Get('shop')
-  getShopProducts(@Query('take', ParseIntPipe) take: number) {
-    return this.productService.getShopProducts(take);
+  getShopProducts(@Query('limit', ParseIntPipe) limit: number,
+                  @Query('page', ParseIntPipe) page: number) {
+    return this.productService.getShopProducts(page, limit);
   }
 
+  @Get('tags-names')
+  getProductsTagsName() {
+    return this.productService.fetchProductsTagsNames();
+  }
 
   @Get('count')
   getTotalProducts() {
@@ -73,6 +76,7 @@ export class ProductController {
   getProductsByTagName(@Param('tagName') tagName: string) {
     return this.productService.searchForProductsByTagName(tagName);
   }
+
   @Get('match-by-name/:name')
   searchMatchByName(@Param('name') name: string) {
     return this.productService.getMatchingByNames(name);

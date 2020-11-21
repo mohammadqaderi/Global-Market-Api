@@ -6,8 +6,6 @@ import { NotificationPayloadDto } from './notification-payload.dto';
 import { NotificationService } from './notification.service';
 import { UserRole } from '../../commons/enums/user-role.enum';
 import { ApiBody, ApiHeader, ApiParam, ApiTags } from '@nestjs/swagger';
-import { AuthCredentialsDto } from '../auth/dto/auth-credentials.dto';
-import { NotificationEntity } from './entities/notification.entity';
 
 
 @ApiTags('notifications, subscribers')

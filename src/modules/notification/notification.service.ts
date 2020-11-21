@@ -53,19 +53,7 @@ export class NotificationService {
     return subscriber;
   }
 
-  async getSubscriberNotifications(id: number): Promise<SubscribersNotifications[]> {
-    const subscriber = await this.getSubscriberById(id);
-    return subscriber.subscribersNotifications;
-  }
 
-  async removeSubscription(email: string) {
-    const subscriber = await this.getSubscriberByEmail(email);
-    await this.deleteSubscriberData(subscriber);
-    const result = await this.subscriberRepository.delete(email);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Subscriber with email ${email} does not found`);
-    }
-  }
 
   async deleteSubscriberData(subscriber: Subscriber) {
     for (let i = 0; i < subscriber.subscribersNotifications.length; i++) {
@@ -75,14 +63,6 @@ export class NotificationService {
 
   }
 
-  async deleteSubscriber(id: number): Promise<void> {
-    const subscriber = await this.getSubscriberById(id);
-    await this.deleteSubscriberData(subscriber);
-    const result = await this.subscriberRepository.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Subscriber with Id ${id} does not found`);
-    }
-  }
 
   async newSubscriber(subscriptionDto: any): Promise<Subscriber> {
     const { sub, email } = subscriptionDto;

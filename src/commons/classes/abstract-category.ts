@@ -1,5 +1,4 @@
 import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import {  ApiProperty } from '@nestjs/swagger';
 
 export class AbstractCategory extends BaseEntity {
   @PrimaryGeneratedColumn()

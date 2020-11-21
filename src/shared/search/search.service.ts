@@ -11,8 +11,9 @@ export class SearchService {
 
   }
 
-  async search(name: string, type: string, take: number): Promise<any[]> {
+  async search(name: string, type: string, take: number, page?: number, limit?: number) {
     let arr = [];
+    let productsPagination;
     switch (type) {
       case 'Categories': {
         arr = await this.categoryService.searchByName(name, take);
@@ -23,8 +24,8 @@ export class SearchService {
         return arr;
       }
       case 'Products': {
-        arr = await this.productService.searchByName(name, take);
-        return arr;
+        productsPagination = await this.productService.searchByName(name, page, limit);
+        return productsPagination;
       }
     }
   }

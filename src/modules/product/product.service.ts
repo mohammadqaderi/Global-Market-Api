@@ -1,10 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException, Param } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ProductRepository } from './repositories/product.repository';
 import { InsertTagDto } from '../../shared/dto/insert-tag.dto';
 import { ProductTag } from './entities/product-tag.entity';
 import { Product } from './entities/product.entity';
 import { ThrowErrors } from '../../commons/functions/throw-errors';
-import NotFound = ThrowErrors.NotFound;
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AwsService } from '../../shared/modules/aws/aws.service';
 import { TagService } from '../tag/tag.service';
@@ -15,6 +14,7 @@ import { CartProduct } from '../cart/entities/cart-product.entity';
 import { CreateCartProductDto } from '../cart/dto/create-cart-product.dto';
 import { ManageProductImages } from '../../commons/interfaces/manage-product-images.interface';
 import { ProductsCustomFilterDto } from './dto/products-custom-filter.dto';
+import NotFound = ThrowErrors.NotFound;
 
 @Injectable()
 export class ProductService {
@@ -30,22 +30,16 @@ export class ProductService {
     return await this.productRepository.find();
   }
 
-  async getShopProducts(take: number) {
-    return await this.productRepository.getShopProducts(take);
+  async getShopProducts(page: number, limit: number) {
+    return await this.productRepository.getShopProducts(page, limit);
   }
 
   async getTotalProducts() {
     return await this.productRepository.getTotalProducts();
   }
 
-  async searchByName(name: string, take: number) {
-    const queryBuilder = this.productRepository.createQueryBuilder('product');
-    const products
-      = await queryBuilder.select()
-      .where('product.name ILIKE :name', { name: `%${name}%` })
-      .take(take)
-      .getMany();
-    return products;
+  async searchByName(name: string, page: number, limit: number) {
+    return await this.productRepository.searchByName(name, page, limit);
   }
 
   async customFilter(productsCustomFilterDto: ProductsCustomFilterDto) {
@@ -64,16 +58,9 @@ export class ProductService {
     return uniqueArray;
   }
 
-  // async getByCustomDate(date: Date, take: number) {
-  //   return await this.productRepository.getByCustomDate(date, take);
-  // }
 
   async getMixLatestProduct() {
     return await this.productRepository.getMixLatestProduct();
-  }
-
-  async getLatestProducts() {
-    return await this.productRepository.getLatestProducts();
   }
 
   async getMostSalesProducts() {
@@ -101,14 +88,6 @@ export class ProductService {
     return await this.productRepository.getProductsByTagName(tagName);
   }
 
-  // async getFilteredBetweenRange(getProductsByRangeDto: GetProductsByRangeDto) {
-  //   return await this.productRepository.filterByRangePrice(getProductsByRangeDto);
-  // }
-  //
-  // async getFilteredByStockExistence(stock: boolean, take: number) {
-  //   return await this.productRepository.filterByExistenceInStock(stock, take);
-  // }
-
   async updateProduct(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
     const product = await this.getProductById(id);
     const { name, references, currentPrice, quantity, description } = updateProductDto;
@@ -131,7 +110,9 @@ export class ProductService {
   async getMatchingByNames(name: string) {
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     const searchResults
-      = await queryBuilder.select('product.name')
+      = await queryBuilder.select(['product.id', 'product.name',
+      'product.images', 'product.currentPrice',
+      'product.previousPrice', 'product.subCategoryId'])
       .where('product.name ILIKE :name', { name: `%${name}%` })
       .getMany();
     return searchResults;
@@ -230,5 +211,11 @@ export class ProductService {
     if (result.affected === 0) {
       NotFound('Product', id);
     }
+  }
+
+  async fetchProductsTagsNames() {
+    const query = this.productTagRepository.createQueryBuilder('productTag');
+    const productTags = await query.select('productTag.name').distinct(true).getMany();
+    return productTags;
   }
 }
