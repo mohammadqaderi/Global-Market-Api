@@ -41,12 +41,20 @@ export class AuthService {
 
   }
 
-  async signUpAdmin(authCredentialsDto: AuthCredentialsDto): Promise<{ admin: User, token: string }> {
+  async signUpAdmin(authCredentialsDto: AuthCredentialsDto): Promise<{ admin: any, token: string }> {
     const admin = await this.setUserOrAdminBaseData(authCredentialsDto);
     admin.claims = [UserRole.WEAK_ADMIN];
     const { email } = authCredentialsDto;
     const token = this.generateJwtToken(email);
-    return { admin: await admin.save(), token };
+    const savedAdmin = await admin.save();
+    return {
+      admin: {
+        email: savedAdmin.email,
+        id: savedAdmin.id,
+        username: savedAdmin.username,
+        emailVerified: savedAdmin.emailVerified,
+      }, token,
+    };
   }
 
   async setUserOrAdminBaseData(authCredentialsDto: AuthCredentialsDto): Promise<User> {
@@ -78,14 +86,22 @@ export class AuthService {
     return user;
   }
 
-  async signUpUser(authCredentialsDto: AuthCredentialsDto): Promise<{ user: User, token: string }> {
+  async signUpUser(authCredentialsDto: AuthCredentialsDto): Promise<{ user: any, token: string }> {
     const user = await this.setUserOrAdminBaseData(authCredentialsDto);
     const { email } = authCredentialsDto;
     user.claims = [UserRole.USER];
     await this.createEmailToken(email);
     await this.sendEmailVerification(email);
     const token = this.generateJwtToken(email);
-    return { user: await user.save(), token };
+    const savedUser = await user.save();
+    return {
+      user: {
+        email: savedUser.email,
+        id: savedUser.id,
+        username: savedUser.username,
+        emailVerified: savedUser.emailVerified,
+      }, token,
+    };
   }
 
   isEmailActivated(email: string) {

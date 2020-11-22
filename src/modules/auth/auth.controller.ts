@@ -58,7 +58,7 @@ export class AuthController {
     return this.authService.signInUser(emailLoginDto);
   }
 
-  @Put('update-token/:email')
+  @Get('update-token/:email')
   updateToken(@Param('email') email: string) {
     const jwt = this.authService.generateJwtToken(email);
     return { jwt };

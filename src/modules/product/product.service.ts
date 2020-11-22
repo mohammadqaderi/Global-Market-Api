@@ -110,10 +110,11 @@ export class ProductService {
   async getMatchingByNames(name: string) {
     const queryBuilder = this.productRepository.createQueryBuilder('product');
     const searchResults
-      = await queryBuilder.select(['product.id', 'product.name',
-      'product.images', 'product.currentPrice',
-      'product.previousPrice', 'product.subCategoryId'])
-      .where('product.name ILIKE :name', { name: `%${name}%` })
+      = await queryBuilder.leftJoinAndSelect('product.productTags', 'productTag')
+      .select(['product.id', 'product.name',
+        'product.images', 'product.currentPrice',
+        'product.previousPrice', 'product.subCategoryId'])
+      .where('productTag.name LIKE :name', { name: name })
       .getMany();
     return searchResults;
   }

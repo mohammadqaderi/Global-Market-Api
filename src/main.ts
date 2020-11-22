@@ -16,23 +16,11 @@ async function bootstrap() {
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
   });
   app.use(function(req, res, next) { //allow cross origin requests
     res.header('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, PUT, OPTIONS, DELETE, GET');
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Access-Control-Allow-Credentials', true);
-    next();
-  });
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT, DELETE');
-    res.header(
-      'Access-Control-Allow-Header',
-      'Origin, X-Requested-With, Content-Type, Accept',
-    );
-    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, HEAD, PUT, OPTIONS, DELETE, GET');
+    res.header('Access-Control-Allow-Headers', '*');
     next();
   });
   const port: number = parseInt(`${process.env.PORT}`) || 3000;

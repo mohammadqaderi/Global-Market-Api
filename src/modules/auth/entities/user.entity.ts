@@ -14,16 +14,16 @@ export class User extends BaseEntity {
   id: number;
 
   @Column()
-  username: string;
+  username?: string;
 
   @Column()
-  password: string;
+  password?: string;
 
   @Column()
   email: string;
 
   @Column()
-  salt: string;
+  salt?: string;
 
   @Column({
     type: 'enum',
@@ -31,14 +31,14 @@ export class User extends BaseEntity {
     array: true,
     nullable: true,
   })
-  claims: UserRole[];
+  claims?: UserRole[];
 
 
   // new column
   @Column({
     default: false,
   })
-  emailVerified: boolean;
+  emailVerified?: boolean;
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
@@ -47,41 +47,41 @@ export class User extends BaseEntity {
 
   @OneToOne(type => Profile, profile => profile.user)
   @JoinColumn()
-  profile: Profile;
+  profile?: Profile;
 
   @OneToOne(type => Cart, cart => cart.user)
   @JoinColumn()
-  cart: Cart;
+  cart?: Cart;
 
   @OneToMany(type => Invoice, invoice => invoice.user, {
     eager: true,
   })
-  invoices: Invoice[];
+  invoices?: Invoice[];
 
   @OneToMany(type => Payment, payment => payment.user, {
     eager: true,
   })
-  payments: Payment[];
+  payments?: Payment[];
 
   @OneToMany(type => Order, order => order.user, {
     eager: true,
   })
-  orders: Order[];
+  orders?: Order[];
 
   @Column({
     nullable: true,
   })
-  profileId: number;
+  profileId?: number;
 
   @Column({
     nullable: true,
   })
-  cartId: number;
+  cartId?: number;
 
 
   @Column({
     nullable: true,
   })
-  stripeId: string;
+  stripeId?: string;
 
 }

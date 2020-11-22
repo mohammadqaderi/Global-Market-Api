@@ -9,7 +9,9 @@ import { UserRole } from '../../../commons/enums/user-role.enum';
 export class UserRepository extends Repository<User> {
   async findByEmail(email: string): Promise<User> {
     const query = this.createQuery();
-    const user = await query.select().where('user.email = :email', { email }).getOne();
+    const user = await query.select(
+
+    ).where('user.email = :email', { email }).getOne();
     return user;
   }
 
@@ -29,7 +31,7 @@ export class UserRepository extends Repository<User> {
   }
 
 
-  async validateUserPassword(emailLoginDto: EmailLoginDto): Promise<{ email: string, user: User }> {
+  async validateUserPassword(emailLoginDto: EmailLoginDto): Promise<{ email: string, user: any }> {
     const { email, password } = emailLoginDto;
     const user = await this.findByEmail(email);
     if (!user) {
@@ -40,7 +42,15 @@ export class UserRepository extends Repository<User> {
       throw new ForbiddenException('<p><span>You are not a user, ask the other super admins to make you a user</span></p>');
     }
     if ((await user.validatePassword(password))) {
-      return { email, user };
+      return { email,
+        user: {
+          email: user.email,
+          id: user.id,
+          username: user.username,
+          emailVerified: user.emailVerified,
+          cartId: user.cartId,
+          profileId: user.profileId
+      } };
     } else {
       throw new BadRequestException('Your Password is incorrect, try another one!');
     }
