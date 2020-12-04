@@ -115,7 +115,7 @@ export class ProductRepository extends Repository<Product> {
     const page = pageNumber || 1;
     const queryBuilder = this.getQueryBuilder();
     queryBuilder.select(['product.id', 'product.name', 'product.inStock', 'product.images',
-      'product.currentPrice', 'product.previousPrice'])
+      'product.currentPrice', 'product.previousPrice', 'product.subCategoryId'])
       .where('product.name ILIKE :name', { name: `%${name}%` });
     const totalProducts = await queryBuilder.getCount();
     const products
@@ -133,5 +133,13 @@ export class ProductRepository extends Repository<Product> {
       lastPage: Math.ceil(totalProducts / limit),
     };
   }
+
+  async getProductsNames(name) {
+    const queryBuilder = this.getQueryBuilder();
+    const products = await queryBuilder.select(['product.name'])
+      .where('product.name ILIKE :name', { name: `%${name}%` }).getMany();
+    return products;
+  }
+
 
 }

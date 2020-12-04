@@ -5,3 +5,8 @@ export interface ISearch {
   page?: number,
   limit?: number
 }
+
+export interface INameSearch {
+  type: string;
+  name: string;
+}

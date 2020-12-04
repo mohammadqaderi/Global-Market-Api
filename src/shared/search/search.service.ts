@@ -29,4 +29,22 @@ export class SearchService {
       }
     }
   }
+
+  async getNames(name, type) {
+    let arr = [];
+    switch (type) {
+      case 'Categories': {
+        arr = await this.categoryService.getCategoriesNames(name);
+        return arr;
+      }
+      case 'Sub Categories': {
+        arr = await this.subCategoryService.getSubCategoriesNames(name);
+        return arr;
+      }
+      case 'Products': {
+        arr = await this.productService.getProductsNames(name);
+        return arr;
+      }
+    }
+  }
 }

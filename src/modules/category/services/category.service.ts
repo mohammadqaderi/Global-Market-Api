@@ -43,6 +43,7 @@ export class CategoryService {
   }
 
   async getCategoryById(id: number): Promise<Category> {
+    console.log(id)
     const category = await this.categoryRepository.findOne({
       where: {
         id,
@@ -105,5 +106,12 @@ export class CategoryService {
     if (result.affected === 0) {
       NotFound('Category', id);
     }
+  }
+
+  async getCategoriesNames(name) {
+    const queryBuilder = this.categoryRepository.createQueryBuilder('category');
+    const categories = await queryBuilder.select(['category.name'])
+      .where('category.name ILIKE :name', { name: `%${name}%` }).getMany();
+    return categories;
   }
 }

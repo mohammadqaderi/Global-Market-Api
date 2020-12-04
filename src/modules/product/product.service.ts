@@ -42,6 +42,10 @@ export class ProductService {
     return await this.productRepository.searchByName(name, page, limit);
   }
 
+  async getProductsNames(name) {
+    return await this.productRepository.getProductsNames(name);
+  }
+
   async customFilter(productsCustomFilterDto: ProductsCustomFilterDto) {
     return await this.productRepository.customFilter(productsCustomFilterDto);
   }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './repositories/user.repository';
 import { JwtModule } from '@nestjs/jwt';
@@ -25,7 +25,8 @@ import { EmailModule } from '../../shared/modules/email/email.module';
     }),
     TypeOrmModule.forFeature([UserRepository, EmailVerification, ForgottenPassword]),
     ProfileModule,
-    EmailModule
+    EmailModule,
+    HttpModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],

@@ -51,6 +51,13 @@ export class SubCategoryService {
     return subCategories;
   }
 
+  async getSubCategoriesNames(name) {
+    const queryBuilder = this.subCategoryRepository.createQueryBuilder('subCategory');
+    const subCategories = await queryBuilder.select(['subCategory.name'])
+      .where('subCategory.name ILIKE :name', { name: `%${name}%` }).getMany();
+    return subCategories;
+  }
+
   async getMatchingByNames(name: string) {
     const queryBuilder = this.subCategoryRepository.createQueryBuilder('subCategory');
     const searchResults

@@ -1,6 +1,6 @@
 import {
   BadRequestException,
-  ConflictException,
+  ConflictException, HttpService,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -23,13 +23,13 @@ import NodeMailerOptions = Config.NodeMailerOptions;
 import { EmailSenderService } from '../../shared/modules/email/email-sender.service';
 import { ThrowErrors } from '../../commons/functions/throw-errors';
 import NotFound = ThrowErrors.NotFound;
-import * as Verifier from 'email-verifier';
+
 import { EditRolesDto } from './dto/edit-roles.dto';
 import { UserRole } from '../../commons/enums/user-role.enum';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
-  private verifier = new Verifier('at_whgCW1bbw4DtPGPBgMVEfCW8n9rMs');
 
   constructor(@InjectRepository(UserRepository) private userRepository: UserRepository,
               @InjectRepository(EmailVerification) private emailVerificationRepo: Repository<EmailVerification>,
@@ -37,6 +37,7 @@ export class AuthService {
               private profileService: ProfileService,
               private emailSenderService: EmailSenderService,
               private jwtService: JwtService,
+              private httpService: HttpService,
   ) {
 
   }
@@ -62,7 +63,8 @@ export class AuthService {
     if (!this.isValidEmail(email)) {
       throw new BadRequestException('You have entered invalid email');
     }
-    if (!(await this.isEmailActivated(email))) {
+    const result = await this.isEmailActivated(email);
+    if (!(result.status === 'passed')) {
       throw new ConflictException(`Your Email is not valid to use in our environment or other environments, please check if this email is valid to use in its service provider`);
     }
     const user = new User();
@@ -104,16 +106,19 @@ export class AuthService {
     };
   }
 
-  isEmailActivated(email: string) {
-    return new Promise(((resolve, reject) => {
-      this.verifier.verify(email, (err, data) => {
-        if (err) {
-          throw err;
-        }
-        resolve((data.smtpCheck == 'true'));
-      });
-    }));
-
+  async isEmailActivated(email: string) {
+    const { data } = await axios.get('https://email-verifier-api.p.rapidapi.com/v2/', {
+      headers: {
+        'x-rapidapi-key': 'f91a4175e7msha779d17002621d6p130155jsn603921f020f3',
+        'x-rapidapi-host': 'email-verifier-api.p.rapidapi.com',
+        useQueryString: true,
+      },
+      params: {
+        apiKey: 'bp7M0sIWD62c8je3LEutqHgNhw5KRXTy',
+        email: email,
+      },
+    });
+    return data;
   }
 
   async getTotalUsers() {

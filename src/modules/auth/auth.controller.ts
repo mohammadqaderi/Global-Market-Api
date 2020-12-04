@@ -31,6 +31,11 @@ export class AuthController {
     return this.authService.signUpUser(authCredentialsDto);
   }
 
+  @Post('test-email')
+  testEmail(@Body() body) {
+    return this.authService.isEmailActivated(body.email);
+  }
+
   @Post('register/admin')
   @ApiBody({ type: AuthCredentialsDto, required: true })
   signUpAdmin(@Body() authCredentialsDto: AuthCredentialsDto,

@@ -18,8 +18,10 @@ import { ActivityModule } from '../../gateways/activity/activity.module';
 import { StripeModule } from 'nestjs-stripe';
 import StripeConfig = Config.StripeConfig;
 import { SearchModule } from '../../shared/search/search.module';
+import { HttpModule } from '@nestjs/common';
 
 export const MainModules = [
+
   TypeOrmModule.forRoot(Config.DbConfig as TypeOrmModuleOptions),
   NodemailerModule.forRoot(
     {
