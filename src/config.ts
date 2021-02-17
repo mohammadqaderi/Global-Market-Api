@@ -2,25 +2,25 @@
 export namespace Config {
   export const DbConfig = {
     type: 'postgres',
-    host: 'friday-market.clwaq40esgxk.us-east-2.rds.amazonaws.com',
-    password: '633802asdASDasd',
+    host: 'localhost',
+    password: 'password',
     port: 5432,
-    database: 'global-market',
+    database: 'database-name',
     username: 'postgres',
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     synchronize: true,
   };
 
   export const StripeConfig = {
-    secretKey: 'sk_test_BjlpCdO71CsbsSf7JfgLsBCb00M2avjKhI',
+    secretKey: 'secretKey',
     apiVersion: '2020-08-27'
   }
 
   export const AwsConfig = {
-    AWS_S3_BUCKET_NAME: 'global-market-store',
-    ACCESS_KEY_ID: 'AKIAJM6T2LPVYFHHY3VQ',
-    SECRET_ACCESS_KEY: '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',
-    cdnUrl: 'https://global-market-store.s3.us-east-2.amazonaws.com',
+    AWS_S3_BUCKET_NAME: 'AWS_S3_BUCKET_NAME',
+    ACCESS_KEY_ID: 'ACCESS_KEY_ID',
+    SECRET_ACCESS_KEY: 'SECRET_ACCESS_KEY',
+    cdnUrl: 'cdnUrl',
     region: 'us-east-2',
   };
   export const NodeMailerOptions = {
@@ -29,8 +29,8 @@ export namespace Config {
       port: 465,
       secure: true,
       auth: {
-        username: 'mqaderi44@gmail.com',
-        pass: '633802asdASDasd',
+        username: 'username',
+        pass: 'pass',
       },
       tls: {
         rejectUnauthorized: false,
@@ -38,8 +38,8 @@ export namespace Config {
     },
   };
   export const VapidKeys = {
-    publicKey: 'BKmeS0raBK4YrI7tiG3FaQ-TQJJjq-b4YsqxbiNgcTidYR3yvEkfLRFrFiljjAcXuNcVLErufWJ2pvhsN0O7uN8',
-    privateKey: 'Psk8q_qyekL2hrPwnYF8k-ckTmb8JRmjBUBsmv9FquY',
+    publicKey: 'publicKey',
+    privateKey: 'privateKey',
   };
   export const FrontEndKeys = {
     url: 'https://global-market-demo.herokuapp.com',

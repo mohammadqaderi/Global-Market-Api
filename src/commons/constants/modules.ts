@@ -30,8 +30,8 @@ export const MainModules = [
         port: 465,
         secure: true,
         auth: {
-          user: 'mqaderi44@gmail.com',
-          pass: 'zfflxrhqnncoebuh',
+          user: 'user',
+          pass: 'pass',
         },
         tls: {
           rejectUnauthorized: false,
