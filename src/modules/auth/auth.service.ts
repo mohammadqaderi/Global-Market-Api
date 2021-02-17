@@ -109,12 +109,12 @@ export class AuthService {
   async isEmailActivated(email: string) {
     const { data } = await axios.get('https://email-verifier-api.p.rapidapi.com/v2/', {
       headers: {
-        'x-rapidapi-key': 'f91a4175e7msha779d17002621d6p130155jsn603921f020f3',
-        'x-rapidapi-host': 'email-verifier-api.p.rapidapi.com',
+        'x-rapidapi-key': 'x-rapidapi-key',
+        'x-rapidapi-host': 'x-rapidapi-host',
         useQueryString: true,
       },
       params: {
-        apiKey: 'bp7M0sIWD62c8je3LEutqHgNhw5KRXTy',
+        apiKey: 'apiKey',
         email: email,
       },
     });
